@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+	<display-name></display-name>
+	<welcome-file-list>
+		<welcome-file>login.jsp</welcome-file>
+	</welcome-file-list>
+	<!--  -->
+	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/pages/errors/404.jsp</location>
+	</error-page>
+	
+	<error-page>
+		<error-code>500</error-code>
+		<location>/WEB-INF/pages/errors/500.jsp</location>
+	</error-page>
+	
+	<context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>SSM-MYSQL.root</param-value>
+	</context-param>
+	<!-- 加载spring总配置文件 -->
+	<context-param>
+		<description>spring总配置</description>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:spring/applicationContext.xml,classpath:spring/applicationContext-security.xml</param-value>
+	</context-param>
+	<!--配置log4g日志 -->
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>classpath:log4j.properties</param-value>
+	</context-param>
+	<!-- 解决weblogic下获取项目名称报错的问题 
+	<context-param>  
+	  <param-name>log4jExposeWebAppRoot</param-name>  
+	  <param-value>false</param-value>  
+	</context-param>-->
+	<!-- XSS过滤
+	<filter>
+        <filter-name>XSSFilter</filter-name>
+        <filter-class>com.julongtech.filter.XSSFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>XSSFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping> 
+    -->
+	<!-- 字符编码过滤器 -->
+	<filter>
+		<description>CharacterEncodingFilter</description>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<description>CharacterEncodingFilter</description>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<!-- Bootstrap the root application context as usual using ContextLoaderListener -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<listener>
+		<description>自定义系统启动监听类</description>
+		<listener-class>com.julongtech.web.listener.SystemInitListener</listener-class>
+	</listener>
+	<!-- 防止内存泄露监听器 -->
+	<listener>
+		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+	</listener>
+	<!-- Log4j监听器 -->
+	<listener>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	</listener>
+	<!-- spring mvc -->
+	<servlet>
+		<description>spring mvc 配置</description>
+		<servlet-name>ssm</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<description>spring mvc 总配置</description>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:spring/ssm-servlet.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ssm</servlet-name>
+		<url-pattern>*.html</url-pattern>
+		<url-pattern>*.action</url-pattern>
+		<url-pattern>*.json</url-pattern>
+	</servlet-mapping>
+	<!-- spring security -->
+	<filter>
+	  <description>spring security 配置</description>
+	  <filter-name>springSecurityFilterChain</filter-name>
+	  <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+	  <filter-name>springSecurityFilterChain</filter-name>
+	  <url-pattern>/*</url-pattern>
+	</filter-mapping>
+<!-- druid 监控配置 -->
+	<servlet>
+		<description>druid 监控配置</description>
+		<servlet-name>DruidStatView</servlet-name>
+		<servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
+		<init-param>  
+			<!-- 允许清空统计数据 -->  
+			<param-name>resetEnable</param-name>  
+			<param-value>true</param-value>  
+	    </init-param>  
+	    <init-param>  
+			<description>用户名</description>
+			<param-name>loginUsername</param-name>  
+			<param-value>druid</param-value>  
+	    </init-param>  
+	    <init-param>  
+			<description>密码</description>
+			<param-name>loginPassword</param-name>  
+			<param-value>druid</param-value>  
+	    </init-param>  
+	    
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DruidStatView</servlet-name>
+		<url-pattern>/druid/*</url-pattern>
+	</servlet-mapping>
+
+  <filter>
+  	<description>WebStatFilter用于采集web-jdbc关联监控的数据</description>
+  	<filter-name>DruidWebStatFilter</filter-name>
+  	<filter-class>com.alibaba.druid.support.http.WebStatFilter</filter-class>
+	  	<init-param>
+		    <description>经常需要排除一些不必要的url，比如*.js,/jslib/*等等。配置在init-param中</description>
+	  		<param-name>exclusions</param-name>
+	  		<param-value>*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*</param-value>
+ 		</init-param>
+ 		<init-param>
+ 			<description>druid 0.2.7版本开始支持profile，配置profileEnable能够监控单个url调用的sql列表</description>
+		    <param-name>profileEnable</param-name>
+		    <param-value>true</param-value>
+		</init-param>
+  </filter>
+  <filter-mapping>
+  	<filter-name>DruidWebStatFilter</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+
+
+	<!-- 设置session失效时间 -->
+	<session-config>
+		<session-timeout>10</session-timeout>
+	</session-config>
+	<!-- JNDI
+	<resource-ref>
+		<res-ref-name>jdbc/xaws</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+		<res-sharing-scope>Shareable</res-sharing-scope>
+	</resource-ref> -->
+</web-app>

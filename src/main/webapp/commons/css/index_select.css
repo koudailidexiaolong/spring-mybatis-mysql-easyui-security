@@ -1,0 +1,10 @@
+@CHARSET "UTF-8";
+/*查询界面 搜索条件需要引入的样式  24% 此样式 */
+#paramForm div {
+	text-align: right;
+	width: 350px;
+	float: left;
+}
+.form_div {
+	float: left;
+}

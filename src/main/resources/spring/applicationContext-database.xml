@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:lang="http://www.springframework.org/schema/lang"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+		http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-4.0.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+		http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		     http://www.springframework.org/schema/jee
+     http://www.springframework.org/schema/jee/spring-jee.xsd">
+	<!-- 配置数据源的jdbc文件加载 -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:jdbc.properties</value>
+				<value>classpath:redis.properties</value>
+			</list>
+		</property>
+	</bean>
+	<!--
+		DBCP数据源 driverClassName:驱动名 url：数据库地址 username：登录名 password：登录密码
+		initialSize：连接池启动时的初始化 maxActive：连接池的最大值
+		maxIdle：最大空闲值，当经过一个高峰时间后，连接池可以慢慢将已经用不到的链接慢慢释放一部分，一直减少到maxle为止
+		minIdle：最小空闲值，当空闲的连接数少于阀值时，连接池就会预申请去一些链接，以免洪峰来时来不及申请 maxWait: 最大等待数量
+		maxOpenPreparedStatements: 最大打开的maxOpenPreparedStatements数量
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+	</bean>	-->
+	<!--
+		C3P0数据源 initialPoolSize：初始化连接数量 minPoolSize：最小连接数量 maxPoolSize：最大连接数量
+		acquireIncrement: 当连接池用完之后一次性获取的连接数量
+		idleConnectionTestPeriod:根据一定的时间间隔检查连接池的连接数量 单位为秒 maxIdleTime：最大空闲时间
+		单位为秒 maxStatements:最大的maxStatements连接数量
+		maxStatementsPerConnection:最大语句缓存
+	
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"	destroy-method="close">
+		<property name="driverClass" value="${jdbc.driverClassName}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="user" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="initialPoolSize" value="${jdbc.initialPoolSize}"></property>
+		<property name="minPoolSize" value="${jdbc.minPoolSize}"></property>
+		<property name="maxPoolSize" value="${jdbc.maxPoolSize}"></property>
+		<property name="acquireIncrement" value="${jdbc.acquireIncrement}"></property>
+		<property name="idleConnectionTestPeriod" value="${jdbc.idleConnectionTestPeriod}"></property>
+		<property name="maxIdleTime" value="${jdbc.maxIdleTime}"></property>
+		<property name="maxStatements" value="${jdbc.maxStatements}"></property>
+		<property name="maxStatementsPerConnection" value="${jdbc.maxStatementsPerConnection}"></property>
+	</bean>
+-->
+	
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close"> 
+     <property name="driverClassName" value="${jdbc.driverClassName}" />
+     <property name="url" value="${jdbc.url}" />
+     <property name="username" value="${jdbc.username}" />
+     <property name="password" value="${jdbc.password}" />
+
+     <property name="filters" value="stat" />
+
+     <property name="maxActive" value="20" />
+     <property name="initialSize" value="1" />
+     <property name="maxWait" value="6000" />
+     <property name="minIdle" value="1" />
+
+     <property name="timeBetweenEvictionRunsMillis" value="60000" />
+     <property name="minEvictableIdleTimeMillis" value="300000" />
+
+     <property name="testWhileIdle" value="true" />
+     <property name="testOnBorrow" value="false" />
+     <property name="testOnReturn" value="false" />
+
+     <property name="poolPreparedStatements" value="true" />
+     <property name="maxOpenPreparedStatements" value="20" />
+	 <!-- asyncInit是1.1.4中新增加的配置，如果有initialSize数量较多时，打开会加快应用启动时间 -->
+     <property name="asyncInit" value="true" />
+      <!-- 打开removeAbandoned功能 配置removeAbandoned对性能会有一些影响，建议怀疑存在泄漏之后再打开。在上面的配置中，
+                如果连接超过30分钟未关闭，就会被强行回收，并且日志记录连接申请时的调用堆栈。
+                当removeAbandoned=true之后，可以在内置监控界面datasource.html中的查看ActiveConnection StackTrace属性的
+               在内置监控页面weburi-detail.html中，查看JdbcPoolConnectionOpenCount和JdbcPoolConnectionCloseCount属性，如果不相等，就是泄漏了
+                 -->
+     <property name="removeAbandoned" value="true" />
+      <!-- 1800秒，也就是30分钟 -->
+  	 <property name="removeAbandonedTimeout" value="1800" />
+  	 <!-- 关闭abanded连接时输出错误日志  -->
+  	 <property name="logAbandoned" value="true" /> 
+ </bean>
+
+
+	<!-- 配置session工厂 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	    <property name="dataSource" ref="dataSource"/>
+	    <property name="configLocation" value="classpath:mybatis/mybatis-config.xml"/>
+	    <!-- 配置自动扫描 -->
+	    <property name="mapperLocations">
+	    	<list>
+	    		<value>classpath*:com/julongtech/**/mapper/*.xml</value>
+	    	</list>
+	    </property>
+	</bean>
+	<!-- 启用dao注解功能  -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer" lazy-init="true">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+		<property name="basePackage" >
+			<value>com.julongtech.**.dao</value>
+		</property>
+		</bean>
+	<!--
+		JNDI的配置方式 tomcatJNDI：java:comp/env/jdbc/xaws weblogic/was
+		JNDI：jdbc/xaws <bean id="dataSource"
+		class="org.springframework.jndi.JndiObjectFactoryBean"> <property
+		name="jndiName" value="jdbc/xaws"/> </bean>
+	-->
+	
+		<!--
+		JNDI的配置方式 tomcatJNDI：java:comp/env/jdbc/xaws weblogic/was
+		JNDI：jdbc/xaws 
+		<bean id="dataSource"
+		class="org.springframework.jndi.JndiObjectFactoryBean"> <property
+		name="jndiName" value="xawsdata"/> </bean>	-->
+
+	<!--
+		tomcatJNDI <property name="jndiName" value="java:comp/env/jdbc/xaws"/>
+	-->
+
+</beans>

@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.julongtech.system.dao.SystemLoggerExceptionDao" >
+  <resultMap id="BaseResultMap" type="com.julongtech.system.service.dto.SystemLoggerExceptionDTO" >
+    <id column="logger_exception_id" property="loggerExceptionId" jdbcType="VARCHAR" />
+    <result column="logger_exception_type" property="loggerExceptionType" jdbcType="VARCHAR" />
+    <result column="logger_exception_create_time" property="loggerExceptionCreateTime" jdbcType="TIMESTAMP" />
+    <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="logger_exception_ip" property="loggerExceptionIp" jdbcType="VARCHAR" />
+    <result column="logger_exception_module" property="loggerExceptionModule" jdbcType="VARCHAR" />
+    <result column="logger_exception_method" property="loggerExceptionMethod" jdbcType="VARCHAR" />
+    <result column="logger_exception_description" property="loggerExceptionDescription" jdbcType="VARCHAR" />
+    <result column="logger_response_time" property="loggerResponseTime" jdbcType="VARCHAR" />
+    <result column="logger_operating_system" property="loggerOperatingSystem" jdbcType="VARCHAR" />
+    <result column="logger_browser_type" property="loggerBrowserType" jdbcType="VARCHAR" />
+    <result column="logger_browser_version" property="loggerBrowserVersion" jdbcType="VARCHAR" />
+    <result column="logger_exception_reserve_a" property="loggerExceptionReserveA" jdbcType="VARCHAR" />
+    <result column="logger_exception_reserve_b" property="loggerExceptionReserveB" jdbcType="VARCHAR" />
+    <result column="logger_exception_reserve_c" property="loggerExceptionReserveC" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.julongtech.system.service.dto.SystemLoggerExceptionDTO" extends="BaseResultMap" >
+    <result column="logger_exception_context" property="loggerExceptionContext" jdbcType="CLOB" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    logger_exception_id, logger_exception_type, logger_exception_create_time, org_id, user_id, user_name, 
+    logger_exception_ip, logger_exception_module, logger_exception_method, logger_exception_description,
+    logger_response_time,logger_operating_system,logger_browser_type,logger_browser_version,
+    logger_exception_reserve_a, logger_exception_reserve_b, logger_exception_reserve_c
+  </sql>
+  <sql id="Blob_Column_List" >
+    LOGGER_EXCEPTION_CONTEXT
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from SYSTEM_LOGGER_EXCEPTION
+    where LOGGER_EXCEPTION_ID = #{loggerExceptionId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectBySelective" resultMap="ResultMapWithBLOBs" parameterType="com.julongtech.system.service.dto.SystemLoggerExceptionDTO" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from SYSTEM_LOGGER_EXCEPTION
+    <where>
+    	<if test="loggerExceptionModule != null and loggerExceptionModule != ''" >
+        	AND LOGGER_EXCEPTION_MODULE = #{loggerExceptionModule,jdbcType=VARCHAR}
+      	</if>
+      	<if test="loggerExceptionMethod != null and loggerExceptionMethod != ''" >
+        	AND LOGGER_EXCEPTION_METHOD = #{loggerExceptionMethod,jdbcType=VARCHAR}
+      	</if>
+    </where>
+     ORDER BY LOGGER_EXCEPTION_ID DESC
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from SYSTEM_LOGGER_EXCEPTION
+    where LOGGER_EXCEPTION_ID = #{loggerExceptionId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.julongtech.system.dao.entity.SystemLoggerExceptionInfo" >
+    <selectKey order="BEFORE" keyProperty="loggerExceptionId" resultType="java.lang.String">
+  		select fun_seq('L')
+  	</selectKey>
+    insert into SYSTEM_LOGGER_EXCEPTION (logger_exception_id, logger_exception_type, 
+      logger_exception_create_time, org_id, user_id, 
+      user_name, logger_exception_ip, logger_exception_module, 
+      logger_exception_method, logger_exception_description, logger_response_time,
+      logger_operating_system,logger_browser_type,logger_browser_version,
+      logger_exception_reserve_a, logger_exception_reserve_b, 
+      logger_exception_reserve_c, logger_exception_context
+      )
+    values (#{loggerExceptionId,jdbcType=VARCHAR}, #{loggerExceptionType,jdbcType=VARCHAR}, 
+      #{loggerExceptionCreateTime,jdbcType=TIMESTAMP}, #{orgId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
+      #{userName,jdbcType=VARCHAR}, #{loggerExceptionIp,jdbcType=VARCHAR}, #{loggerExceptionModule,jdbcType=VARCHAR}, 
+      #{loggerExceptionMethod,jdbcType=VARCHAR}, #{loggerExceptionDescription,jdbcType=VARCHAR}, #{loggerResponseTime,jdbcType=VARCHAR}, 
+      #{loggerOperatingSystem,jdbcType=VARCHAR},#{loggerBrowserType,jdbcType=VARCHAR}, #{loggerBrowserVersion,jdbcType=VARCHAR},
+      #{loggerExceptionReserveA,jdbcType=VARCHAR}, #{loggerExceptionReserveB,jdbcType=VARCHAR}, 
+      #{loggerExceptionReserveC,jdbcType=VARCHAR}, #{loggerExceptionContext,jdbcType=CLOB}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.julongtech.system.dao.entity.SystemLoggerExceptionInfo" >
+  	<selectKey order="BEFORE" keyProperty="loggerExceptionId" resultType="java.lang.String">
+  		select fun_seq('L')
+  	</selectKey>
+    insert into SYSTEM_LOGGER_EXCEPTION
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="loggerExceptionId != null and loggerExceptionId != '' " >
+        LOGGER_EXCEPTION_ID,
+      </if>
+      <if test="loggerExceptionType != null and loggerExceptionType != '' " >
+        LOGGER_EXCEPTION_TYPE,
+      </if>
+      <if test="loggerExceptionCreateTime != null and loggerExceptionCreateTime != '' " >
+        LOGGER_EXCEPTION_CREATE_TIME,
+      </if>
+      <if test="orgId != null and orgId != '' " >
+        ORG_ID,
+      </if>
+      <if test="userId != null and userId != '' " >
+        USER_ID,
+      </if>
+      <if test="userName != null and userName != '' " >
+        USER_NAME,
+      </if>
+      <if test="loggerExceptionIp != null and loggerExceptionIp != '' " >
+        LOGGER_EXCEPTION_IP,
+      </if>
+      <if test="loggerExceptionModule != null and loggerExceptionModule != '' " >
+        LOGGER_EXCEPTION_MODULE,
+      </if>
+      <if test="loggerExceptionMethod != null and loggerExceptionMethod != '' " >
+        LOGGER_EXCEPTION_METHOD,
+      </if>
+      <if test="loggerExceptionDescription != null and loggerExceptionDescription != '' " >
+        logger_exception_description,
+      </if>
+      <if test="loggerResponseTime != null and loggerResponseTime != '' " >
+        logger_response_time,
+      </if>
+      <if test="loggerOperatingSystem != null and loggerOperatingSystem != '' " >
+        LOGGER_OPERATING_SYSTEM,
+      </if>
+      <if test="loggerBrowserType != null and loggerBrowserType != '' " >
+        LOGGER_BROWSER_TYPE,
+      </if>
+      <if test="loggerBrowserVersion != null and loggerBrowserVersion != '' " >
+        LOGGER_BROWSER_VERSION,
+      </if>
+      <if test="loggerExceptionReserveA != null and loggerExceptionReserveA != '' " >
+        LOGGER_EXCEPTION_RESERVE_A,
+      </if>
+      <if test="loggerExceptionReserveB != null and loggerExceptionReserveB != '' " >
+        LOGGER_EXCEPTION_RESERVE_B,
+      </if>
+      <if test="loggerExceptionReserveC != null and loggerExceptionReserveC != '' " >
+        LOGGER_EXCEPTION_RESERVE_C,
+      </if>
+      <if test="loggerExceptionContext != null and loggerExceptionContext != '' " >
+        LOGGER_EXCEPTION_CONTEXT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="loggerExceptionId != null and loggerExceptionId != '' " >
+        #{loggerExceptionId,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerExceptionType != null and loggerExceptionType != '' " >
+        #{loggerExceptionType,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerExceptionCreateTime != null and loggerExceptionCreateTime != '' " >
+        #{loggerExceptionCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orgId != null and orgId != '' " >
+        #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null and userId != '' " >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null and userName != '' " >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerExceptionIp != null and loggerExceptionIp != '' " >
+        #{loggerExceptionIp,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerExceptionModule != null and loggerExceptionModule != '' " >
+        #{loggerExceptionModule,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerExceptionMethod != null and loggerExceptionMethod != '' " >
+        #{loggerExceptionMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerExceptionDescription != null and loggerExceptionDescription != '' " >
+        #{loggerExceptionDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerResponseTime != null and loggerResponseTime != '' " >
+        #{loggerResponseTime,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerOperatingSystem != null and loggerOperatingSystem != '' " >
+        #{loggerOperatingSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerBrowserType != null and loggerBrowserType != '' " >
+        #{loggerBrowserType,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerBrowserVersion != null and loggerBrowserVersion != '' " >
+        #{loggerBrowserVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerExceptionReserveA != null and loggerExceptionReserveA != '' " >
+        #{loggerExceptionReserveA,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerExceptionReserveB != null and loggerExceptionReserveB != '' " >
+        #{loggerExceptionReserveB,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerExceptionReserveC != null and loggerExceptionReserveC != '' " >
+        #{loggerExceptionReserveC,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerExceptionContext != null and loggerExceptionContext != '' " >
+        #{loggerExceptionContext,jdbcType=CLOB},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.julongtech.system.dao.entity.SystemLoggerExceptionInfo" >
+    update SYSTEM_LOGGER_EXCEPTION
+    <set >
+      <if test="loggerExceptionType != null and loggerExceptionType != ''" >
+        LOGGER_EXCEPTION_TYPE = #{loggerExceptionType,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerExceptionCreateTime != null and loggerExceptionCreateTime != ''" >
+        LOGGER_EXCEPTION_CREATE_TIME = #{loggerExceptionCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orgId != null and orgId != ''" >
+        ORG_ID = #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null and userId != ''" >
+        USER_ID = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null and userName != ''" >
+        USER_NAME = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerExceptionIp != null and loggerExceptionIp != ''" >
+        LOGGER_EXCEPTION_IP = #{loggerExceptionIp,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerExceptionModule != null and loggerExceptionModule != ''" >
+        LOGGER_EXCEPTION_MODULE = #{loggerExceptionModule,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerExceptionMethod != null and loggerExceptionMethod != ''" >
+        LOGGER_EXCEPTION_METHOD = #{loggerExceptionMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerExceptionDescription != null and loggerExceptionDescription != ''" >
+        logger_exception_description = #{loggerExceptionDescription,jdbcType=VARCHAR},
+      
+      </if>
+      <if test="loggerResponseTime != null and loggerResponseTime != ''" >
+        LOGGER_RESPONSE_TIME = #{loggerResponseTime,jdbcType=VARCHAR},
+      </if>
+       <if test="loggerOperatingSystem != null and loggerOperatingSystem != '' " >
+        LOGGER_OPERATING_SYSTEM = #{loggerOperatingSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerBrowserType != null and loggerBrowserType != '' " >
+        LOGGER_BROWSER_TYPE = #{loggerBrowserType,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerBrowserVersion != null and loggerBrowserVersion != '' " >
+        LOGGER_BROWSER_VERSION = #{loggerBrowserVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerExceptionReserveA != null and loggerExceptionReserveA != ''" >
+        LOGGER_EXCEPTION_RESERVE_A = #{loggerExceptionReserveA,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerExceptionReserveB != null and loggerExceptionReserveB != ''" >
+        LOGGER_EXCEPTION_RESERVE_B = #{loggerExceptionReserveB,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerExceptionReserveC != null and loggerExceptionReserveC != ''" >
+        LOGGER_EXCEPTION_RESERVE_C = #{loggerExceptionReserveC,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerExceptionContext != null and loggerExceptionContext != ''" >
+        LOGGER_EXCEPTION_CONTEXT = #{loggerExceptionContext,jdbcType=CLOB},
+      </if>
+    </set>
+    where LOGGER_EXCEPTION_ID = #{loggerExceptionId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.julongtech.system.dao.entity.SystemLoggerExceptionInfo" >
+    update SYSTEM_LOGGER_EXCEPTION
+    set LOGGER_EXCEPTION_TYPE = #{loggerExceptionType,jdbcType=VARCHAR},
+      LOGGER_EXCEPTION_CREATE_TIME = #{loggerExceptionCreateTime,jdbcType=TIMESTAMP},
+      ORG_ID = #{orgId,jdbcType=VARCHAR},
+      USER_ID = #{userId,jdbcType=VARCHAR},
+      USER_NAME = #{userName,jdbcType=VARCHAR},
+      LOGGER_EXCEPTION_IP = #{loggerExceptionIp,jdbcType=VARCHAR},
+      LOGGER_EXCEPTION_MODULE = #{loggerExceptionModule,jdbcType=VARCHAR},
+      LOGGER_EXCEPTION_METHOD = #{loggerExceptionMethod,jdbcType=VARCHAR},
+      logger_exception_description = #{loggerExceptionDescription,jdbcType=VARCHAR},
+      logger_response_time = #{loggerResponseTime,jdbcType=VARCHAR},
+      LOGGER_OPERATING_SYSTEM = #{loggerOperatingSystem,jdbcType=VARCHAR},
+      LOGGER_BROWSER_TYPE = #{loggerBrowserType,jdbcType=VARCHAR},
+      LOGGER_BROWSER_VERSION = #{loggerBrowserVersion,jdbcType=VARCHAR},
+      LOGGER_EXCEPTION_RESERVE_A = #{loggerExceptionReserveA,jdbcType=VARCHAR},
+      LOGGER_EXCEPTION_RESERVE_B = #{loggerExceptionReserveB,jdbcType=VARCHAR},
+      LOGGER_EXCEPTION_RESERVE_C = #{loggerExceptionReserveC,jdbcType=VARCHAR},
+      LOGGER_EXCEPTION_CONTEXT = #{loggerExceptionContext,jdbcType=CLOB}
+    where LOGGER_EXCEPTION_ID = #{loggerExceptionId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.julongtech.system.dao.entity.SystemLoggerExceptionInfo" >
+    update SYSTEM_LOGGER_EXCEPTION
+    set LOGGER_EXCEPTION_TYPE = #{loggerExceptionType,jdbcType=VARCHAR},
+      LOGGER_EXCEPTION_CREATE_TIME = #{loggerExceptionCreateTime,jdbcType=TIMESTAMP},
+      ORG_ID = #{orgId,jdbcType=VARCHAR},
+      USER_ID = #{userId,jdbcType=VARCHAR},
+      USER_NAME = #{userName,jdbcType=VARCHAR},
+      LOGGER_EXCEPTION_IP = #{loggerExceptionIp,jdbcType=VARCHAR},
+      LOGGER_EXCEPTION_MODULE = #{loggerExceptionModule,jdbcType=VARCHAR},
+      LOGGER_EXCEPTION_METHOD = #{loggerExceptionMethod,jdbcType=VARCHAR},
+      logger_exception_description = #{loggerExceptionDescription,jdbcType=VARCHAR},
+      logger_response_time = #{loggerResponseTime,jdbcType=VARCHAR},
+      LOGGER_OPERATING_SYSTEM = #{loggerOperatingSystem,jdbcType=VARCHAR},
+      LOGGER_BROWSER_TYPE = #{loggerBrowserType,jdbcType=VARCHAR},
+      LOGGER_BROWSER_VERSION = #{loggerBrowserVersion,jdbcType=VARCHAR},
+      LOGGER_EXCEPTION_RESERVE_A = #{loggerExceptionReserveA,jdbcType=VARCHAR},
+      LOGGER_EXCEPTION_RESERVE_B = #{loggerExceptionReserveB,jdbcType=VARCHAR},
+      LOGGER_EXCEPTION_RESERVE_C = #{loggerExceptionReserveC,jdbcType=VARCHAR}
+    where LOGGER_EXCEPTION_ID = #{loggerExceptionId,jdbcType=VARCHAR}
+  </update>
+</mapper>

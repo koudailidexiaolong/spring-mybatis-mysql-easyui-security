@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+	
+	<!-- 过滤不需要进行拦截的静态资源和页面 -->
+	<http pattern="/commons/**" security="none" />
+	<http pattern="/plugin/**" security="none" />
+	<http pattern="/login*" security="none" />
+	<http pattern="/druid*" security="none" />
+	<!-- 配置解释
+		login-page  默认的登录界面 
+		default-target-url 登录成功默认打开界面
+		username-parameter：表示登录时用户名使用的是哪个参数，默认是 “j_username”
+		password-parameter：表示登录时密码使用的是哪个参数，默认是 “j_password”
+		login-processing-url：表示登录时提交的地址，默认是 “/j-spring-security-check”。这个只是 Spring Security 用来标记登录页面使用的提交地址，真正关于登录这个请求是不需要用户自己处理的
+		logout-success-url 成功推出的 url
+		authentication-failure-url 登录失败的url
+		csrf 启用跨站请求伪造(CSRF)保护
+	
+  <http auto-config="true" >
+        <intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY"  requires-channel="any"/>
+        <form-login  login-page="/login" 
+        			 default-target-url="/login/index.action"
+                     username-parameter="userId" 
+                     password-parameter="userPassword" 
+                     authentication-failure-handler-ref="userAuthenticationFailureHandler"
+                     authentication-success-handler-ref="userAuthenticationSuccessHandler"
+                     />
+        <logout logout-success-url="/login/loginOut.action"  invalidate-session="true"/>
+    </http>-->
+ 	<!-- 权限校验控制  第一种配置 此种自定义异常不会生效 需要增加判断
+ 	<authentication-manager >
+         <authentication-provider user-service-ref="customUserDetailsService"></authentication-provider>
+    </authentication-manager>
+ 	 -->
+ 	<!-- 权限校验控制  第二种配置
+    <authentication-manager >
+         <authentication-provider ref="daoAuthenticationProvider"></authentication-provider>
+    </authentication-manager>
+    -->
+    <!-- 权限校验控制  第三种配置-->
+    <authentication-manager alias="authenticationManager">
+         <authentication-provider ref="userDaoAuthenticationProvider"></authentication-provider>
+    </authentication-manager>
+     
+     <!-- 下面的配置方式是为了 让  hideUserNotFoundExceptions 生效
+	<beans:bean id="daoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+		<beans:property name="userDetailsService" ref="customUserDetailsService"></beans:property>
+		<beans:property name="hideUserNotFoundExceptions" value="false"></beans:property>
+	</beans:bean>
+	-->
+	<!--  第三种 配置 自定义密码解密 -->
+	<beans:bean id="userDaoAuthenticationProvider" class="com.julongtech.security.configuration.UserDaoAuthenticationProvider">
+		<beans:property name="userDetailsService" ref="customUserDetailsService"></beans:property>
+		<beans:property name="hideUserNotFoundExceptions" value="false"></beans:property>
+	</beans:bean>
+	
+	 <!-- 权限校验控制  第四种 自定义登录方法
+ 	<authentication-manager >
+         <authentication-provider user-service-ref="customUserDetailsService"></authentication-provider>
+    </authentication-manager>
+ 	 -->
+ 	 <http auto-config="true">
+ 	    <intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY"  requires-channel="any"/>
+ 	    <logout logout-success-url="/login/loginOut.action"  invalidate-session="true"/>
+ 	 	<custom-filter ref="adminUsernamePasswordAuthenticationFilter" before="FORM_LOGIN_FILTER"/>
+ 	 </http>
+ 	 <beans:bean id="adminUsernamePasswordAuthenticationFilter" class="com.julongtech.security.filter.AdminUsernamePasswordAuthenticationFilter">
+		<beans:property name="authenticationFailureHandler" ref="userAuthenticationFailureHandler"></beans:property>
+		<beans:property name="authenticationSuccessHandler" ref="userAuthenticationSuccessHandler"></beans:property>
+		<beans:property name="authenticationManager" ref="authenticationManager"></beans:property>
+		<beans:property name="usernameParameter" value="userId" ></beans:property>
+		<beans:property name="passwordParameter" value="userPassword"></beans:property>
+ 	  </beans:bean>
+ 	 
+ 	<!-- 分权限界面不一样 可以实现此类  -->
+    <beans:bean id="customUserDetailsService" class="com.julongtech.security.configuration.CustomUserDetailsService"></beans:bean>
+    <!-- 正确错误拦截器 -->
+	<beans:bean id="userAuthenticationSuccessHandler" class="com.julongtech.security.configuration.UserAuthenticationSuccessHandler"></beans:bean>
+	<beans:bean id="userAuthenticationFailureHandler" class="com.julongtech.security.configuration.UserAuthenticationFailureHandler"></beans:bean>
+</beans:beans>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.julongtech.system.dao.SystemUserRoleMappedDao" >
+  <resultMap id="BaseResultMap" type="com.julongtech.system.service.dto.SystemUserRoleMappedDTO" >
+    <id column="MAPPED_ID" property="mappedId" jdbcType="INTEGER" />
+    <result column="USER_ID" property="userId" jdbcType="VARCHAR" />
+    <result column="ROLE_ID" property="roleId" jdbcType="INTEGER" />
+    <result column="ORG_ID" property="orgId" jdbcType="VARCHAR" />
+    <result column="MAPPED_STATUS" property="mappedStatus" jdbcType="VARCHAR" />
+    <result column="MAPPED_CREATE_TIME" property="mappedCreateTime" jdbcType="TIMESTAMP" />
+    <result column="MAPPED_CREATE_USER_ID" property="mappedCreateUserId" jdbcType="VARCHAR" />
+    <result column="MAPPED_RESERVE_A" property="mappedReserveA" jdbcType="VARCHAR" />
+    <result column="MAPPED_RESERVE_B" property="mappedReserveB" jdbcType="VARCHAR" />
+    <result column="MAPPED_RESERVE_C" property="mappedReserveC" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    mapped_id, user_id, role_id, org_id, mapped_status, mapped_create_time, mapped_create_user_id, 
+    mapped_reserve_a, mapped_reserve_b, mapped_reserve_c
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from SYSTEM_USER_ROLE_MAPPED
+    where MAPPED_ID = #{mappedId,jdbcType=INTEGER}
+  </select>
+  <select id="selectBySelective" resultMap="BaseResultMap" parameterType="com.julongtech.system.service.dto.SystemUserRoleMappedDTO" >
+    select 
+    <include refid="Base_Column_List" />
+    from SYSTEM_USER_ROLE_MAPPED
+    <where>
+      <if test="mappedId != null and mappedId != ''" >
+        AND MAPPED_ID = #{mappedId,jdbcType=INTEGER}
+      </if>
+      <if test="userId != null and userId != ''" >
+        AND USER_ID = #{userId,jdbcType=VARCHAR}
+      </if>
+      <if test="roleId != null and roleId != ''" >
+        AND ROLE_ID = #{roleId,jdbcType=INTEGER}
+      </if>
+      <if test="orgId != null and orgId != ''" >
+        AND ORG_ID = #{orgId,jdbcType=VARCHAR}
+      </if>
+      <if test="mappedStatus != null and mappedStatus != ''" >
+        AND MAPPED_STATUS = #{mappedStatus,jdbcType=VARCHAR}
+      </if>
+    </where>
+    ORDER BY MAPPED_ID
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from SYSTEM_USER_ROLE_MAPPED
+    where MAPPED_ID = #{mappedId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByUserId" parameterType="java.lang.Integer" >
+    delete from SYSTEM_USER_ROLE_MAPPED
+    where USER_ID = #{userId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.julongtech.system.dao.entity.SystemUserRoleMappedInfo" useGeneratedKeys="true" keyProperty="mappedId">
+    insert into SYSTEM_USER_ROLE_MAPPED ( user_id, role_id, 
+      org_id, mapped_status, mapped_create_time, 
+      mapped_create_user_id, mapped_reserve_a, mapped_reserve_b, 
+      mapped_reserve_c)
+    values (#{userId,jdbcType=VARCHAR}, #{roleId,jdbcType=INTEGER}, 
+      #{orgId,jdbcType=VARCHAR}, #{mappedStatus,jdbcType=VARCHAR}, #{mappedCreateTime,jdbcType=TIMESTAMP}, 
+      #{mappedCreateUserId,jdbcType=VARCHAR}, #{mappedReserveA,jdbcType=VARCHAR}, #{mappedReserveB,jdbcType=VARCHAR}, 
+      #{mappedReserveC,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.julongtech.system.dao.entity.SystemUserRoleMappedInfo" useGeneratedKeys="true" keyProperty="mappedId">
+    insert into SYSTEM_USER_ROLE_MAPPED
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null and userId != '' " >
+        USER_ID,
+      </if>
+      <if test="roleId != null and roleId != '' " >
+        ROLE_ID,
+      </if>
+      <if test="orgId != null and orgId != '' " >
+        ORG_ID,
+      </if>
+      <if test="mappedStatus != null and mappedStatus != '' " >
+        MAPPED_STATUS,
+      </if>
+      <if test="mappedCreateTime != null and mappedCreateTime != '' " >
+        MAPPED_CREATE_TIME,
+      </if>
+      <if test="mappedCreateUserId != null and mappedCreateUserId != '' " >
+        MAPPED_CREATE_USER_ID,
+      </if>
+      <if test="mappedReserveA != null and mappedReserveA != '' " >
+        MAPPED_RESERVE_A,
+      </if>
+      <if test="mappedReserveB != null and mappedReserveB != '' " >
+        MAPPED_RESERVE_B,
+      </if>
+      <if test="mappedReserveC != null and mappedReserveC != '' " >
+        MAPPED_RESERVE_C,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null and userId != '' " >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null and roleId != '' " >
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="orgId != null and orgId != '' " >
+        #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedStatus != null and mappedStatus != '' " >
+        #{mappedStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedCreateTime != null and mappedCreateTime != '' " >
+        #{mappedCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="mappedCreateUserId != null and mappedCreateUserId != '' " >
+        #{mappedCreateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedReserveA != null and mappedReserveA != '' " >
+        #{mappedReserveA,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedReserveB != null and mappedReserveB != '' " >
+        #{mappedReserveB,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedReserveC != null and mappedReserveC != '' " >
+        #{mappedReserveC,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.julongtech.system.dao.entity.SystemUserRoleMappedInfo" >
+    update SYSTEM_USER_ROLE_MAPPED
+    <set >
+      <if test="userId != null and userId != ''" >
+        USER_ID = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null and roleId != ''" >
+        ROLE_ID = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="orgId != null and orgId != ''" >
+        ORG_ID = #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedStatus != null and mappedStatus != ''" >
+        MAPPED_STATUS = #{mappedStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedCreateTime != null and mappedCreateTime != ''" >
+        MAPPED_CREATE_TIME = #{mappedCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="mappedCreateUserId != null and mappedCreateUserId != ''" >
+        MAPPED_CREATE_USER_ID = #{mappedCreateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedReserveA != null and mappedReserveA != ''" >
+        MAPPED_RESERVE_A = #{mappedReserveA,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedReserveB != null and mappedReserveB != ''" >
+        MAPPED_RESERVE_B = #{mappedReserveB,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedReserveC != null and mappedReserveC != ''" >
+        MAPPED_RESERVE_C = #{mappedReserveC,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where MAPPED_ID = #{mappedId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.julongtech.system.dao.entity.SystemUserRoleMappedInfo" >
+    update SYSTEM_USER_ROLE_MAPPED
+    set USER_ID = #{userId,jdbcType=VARCHAR},
+      ROLE_ID = #{roleId,jdbcType=INTEGER},
+      ORG_ID = #{orgId,jdbcType=VARCHAR},
+      MAPPED_STATUS = #{mappedStatus,jdbcType=VARCHAR},
+      MAPPED_CREATE_TIME = #{mappedCreateTime,jdbcType=TIMESTAMP},
+      MAPPED_CREATE_USER_ID = #{mappedCreateUserId,jdbcType=VARCHAR},
+      MAPPED_RESERVE_A = #{mappedReserveA,jdbcType=VARCHAR},
+      MAPPED_RESERVE_B = #{mappedReserveB,jdbcType=VARCHAR},
+      MAPPED_RESERVE_C = #{mappedReserveC,jdbcType=VARCHAR}
+    where MAPPED_ID = #{mappedId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByRole" parameterType="com.julongtech.system.dao.entity.SystemUserRoleMappedInfo">
+  	update SYSTEM_USER_ROLE_MAPPED set MAPPED_STATUS = #{mappedStatus,jdbcType=VARCHAR}  WHERE ROLE_ID = #{roleId,jdbcType=INTEGER}
+  </update>
+</mapper>

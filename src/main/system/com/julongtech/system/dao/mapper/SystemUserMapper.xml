@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.julongtech.system.dao.SystemUserDao" >
+
+ <resultMap id="BaseResultMap" type="com.julongtech.system.service.dto.SystemUserDTO" >
+  <id column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    <result column="user_password" property="userPassword" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="user_age" property="userAge" jdbcType="VARCHAR" />
+    <result column="user_sex" property="userSex" jdbcType="VARCHAR" />
+    <result column="user_identity" property="userIdentity" jdbcType="VARCHAR" />
+    <result column="user_address" property="userAddress" jdbcType="VARCHAR" />
+    <result column="user_phone" property="userPhone" jdbcType="VARCHAR" />
+    <result column="user_mail" property="userMail" jdbcType="VARCHAR" />
+    <result column="user_desc" property="userDesc" jdbcType="VARCHAR" />
+    <result column="user_image" property="userImage" jdbcType="VARCHAR" />
+    <result column="user_create_time" property="userCreateTime" jdbcType="TIMESTAMP" />
+    <result column="user_create_user_id" property="userCreateUserId" jdbcType="VARCHAR" />
+    <result column="user_create_user_name" property="userCreateUserName" jdbcType="VARCHAR" />
+    <result column="user_update_time" property="userUpdateTime" jdbcType="TIMESTAMP" />
+    <result column="user_update_user_id" property="userUpdateUserId" jdbcType="VARCHAR" />
+    <result column="user_update_user_name" property="userUpdateUserName" jdbcType="VARCHAR" />
+    <result column="user_update_password_time" property="userUpdatePasswordTime" jdbcType="TIMESTAMP" />
+    <result column="user_status" property="userStatus" jdbcType="VARCHAR" />
+    <result column="user_skin" property="userSkin" jdbcType="VARCHAR" />
+    <result column="user_level" property="userLevel" jdbcType="VARCHAR" />
+    <result column="user_reserve_a" property="userReserveA" jdbcType="VARCHAR" />
+    <result column="user_reserve_b" property="userReserveB" jdbcType="VARCHAR" />
+    <result column="user_reserve_c" property="userReserveC" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List">
+        user_id, org_id, user_password, user_name, user_age, user_sex, user_identity, user_address, 
+	    user_phone, user_mail, user_desc, user_image, user_create_time, user_create_user_id,
+	    user_update_time, user_update_user_id, user_update_password_time, user_status, user_skin, 
+	    user_level, user_reserve_a, user_reserve_b, user_reserve_c
+  </sql>
+  <sql id="add_sql">
+  	  ,user_create_user_name,user_update_user_name
+  </sql>
+  <sql id="join_sql">
+  	SELECT 
+	    a.user_id, a.org_id, a.user_password, a.user_name, a.user_age, a.user_sex, a.user_identity, a.user_address, 
+	    a.user_phone, a.user_mail, a.user_desc, a.user_image, a.user_create_time, a.user_create_user_id,
+	    b.user_name as user_create_user_name, 
+	    a.user_update_time, a.user_update_user_id,
+	    c.user_name as  user_update_user_name, 
+	    a.user_update_password_time, a.user_status, a.user_skin, 
+	    a.user_level, a.user_reserve_a, a.user_reserve_b, a.user_reserve_c
+    FROM 
+    	SYSTEM_USER a
+    LEFT JOIN SYSTEM_USER b on a.USER_CREATE_USER_ID = b.USER_ID
+    LEFT JOIN SYSTEM_USER c on c.USER_ID = a.USER_UPDATE_USER_ID
+  </sql>
+  <!-- 根据编号查询单个对象 -->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    <include refid="join_sql"></include>
+    where a.USER_ID = #{userId,jdbcType=VARCHAR}
+  </select>
+  <!-- 单表条件查询 -->
+  <select id="selectBySelective" resultMap="BaseResultMap" parameterType="com.julongtech.system.service.dto.SystemUserDTO" >
+      <include refid="join_sql"></include>
+    <where>
+      <if test="userId != null and userId != '' " >
+         AND  a.USER_ID = #{userId,jdbcType=VARCHAR}
+      </if>
+      <if test="orgId != null and orgId != ''" >
+         AND  a.ORG_ID = #{orgId,jdbcType=VARCHAR}
+      </if>
+      <if test="userName != null and userName != ''" >
+         AND  a.USER_NAME LIKE #{userName,jdbcType=VARCHAR}
+      </if>
+      <if test="userSex != null and userSex != ''" >
+         AND  a.USER_SEX = #{userSex,jdbcType=VARCHAR}
+      </if>
+      <if test="userLevel != null and userLevel != ''" >
+        AND  a.USER_LEVEL = #{userLevel,jdbcType=VARCHAR}
+      </if>
+      <if test="userStatus != null and userStatus != ''" >
+        AND  a.USER_STATUS = #{userStatus,jdbcType=VARCHAR}
+      </if>
+      <choose>
+      	<when test="beginDate != null and beginDate != '' and  endDate != null and endDate != ''">
+      		AND a.USER_CREATE_TIME BETWEEN  #{beginDate,jdbcType=DATE} AND #{endDate,jdbcType=DATE}
+      	</when>
+      	<when test="beginDate != null and beginDate != ''">
+      		AND a.USER_CREATE_TIME &gt;  #{beginDate,jdbcType=DATE}
+      	</when>
+      	<when test="endDate != null and endDate != ''">
+      		AND a.USER_CREATE_TIME &lt;  #{endDate,jdbcType=DATE}
+      	</when>
+      </choose>
+    </where>
+    ORDER BY a.USER_CREATE_TIME DESC
+  </select>
+  
+  <!-- 查询是否存在-->
+  <select id="selectCount" resultType="java.lang.String" parameterType="com.julongtech.system.service.dto.SystemUserDTO" >
+  	SELECT COUNT(0) FROM SYSTEM_USER WHERE USER_ID =  #{userId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from SYSTEM_USER
+    where USER_ID = #{userId,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.julongtech.system.dao.entity.SystemUserInfo" >
+     insert into system_user (user_id, org_id, user_password, 
+      user_name, user_age, user_sex, 
+      user_identity, user_address, user_phone, 
+      user_mail, user_desc, user_image, 
+      user_create_time, user_create_user_id, user_update_time, 
+      user_update_user_id, user_update_password_time, 
+      user_status, user_skin, user_level, 
+      user_reserve_a, user_reserve_b, user_reserve_c
+      )
+    values (#{userId,jdbcType=VARCHAR}, #{orgId,jdbcType=VARCHAR}, #{userPassword,jdbcType=VARCHAR}, 
+      #{userName,jdbcType=VARCHAR}, #{userAge,jdbcType=VARCHAR}, #{userSex,jdbcType=VARCHAR}, 
+      #{userIdentity,jdbcType=VARCHAR}, #{userAddress,jdbcType=VARCHAR}, #{userPhone,jdbcType=VARCHAR}, 
+      #{userMail,jdbcType=VARCHAR}, #{userDesc,jdbcType=VARCHAR}, #{userImage,jdbcType=VARCHAR}, 
+      #{userCreateTime,jdbcType=DATE}, #{userCreateUserId,jdbcType=VARCHAR}, #{userUpdateTime,jdbcType=DATE}, 
+      #{userUpdateUserId,jdbcType=VARCHAR}, #{userUpdatePasswordTime,jdbcType=DATE}, 
+      #{userStatus,jdbcType=VARCHAR}, #{userSkin,jdbcType=VARCHAR}, #{userLevel,jdbcType=VARCHAR}, 
+      #{userReserveA,jdbcType=VARCHAR}, #{userReserveB,jdbcType=VARCHAR}, #{userReserveC,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.julongtech.system.dao.entity.SystemUserInfo" >
+    insert into SYSTEM_USER
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+       <if test="userId != null and userId != '' " >
+        user_id,
+      </if>
+      <if test="orgId != null and orgId != '' " >
+        org_id,
+      </if>
+      <if test="userPassword != null and userPassword != '' " >
+        user_password,
+      </if>
+      <if test="userName != null and userName != '' " >
+        user_name,
+      </if>
+      <if test="userAge != null and userAge != '' " >
+        user_age,
+      </if>
+      <if test="userSex != null and userSex != '' " >
+        user_sex,
+      </if>
+      <if test="userIdentity != null and userIdentity != '' " >
+        user_identity,
+      </if>
+      <if test="userAddress != null and userAddress != '' " >
+        user_address,
+      </if>
+      <if test="userPhone != null and userPhone != '' " >
+        user_phone,
+      </if>
+      <if test="userMail != null and userMail != '' " >
+        user_mail,
+      </if>
+      <if test="userDesc != null and userDesc != '' " >
+        user_desc,
+      </if>
+      <if test="userImage != null and userImage != '' " >
+        user_image,
+      </if>
+      <if test="userCreateTime != null and userCreateTime != '' " >
+        user_create_time,
+      </if>
+      <if test="userCreateUserId != null and userCreateUserId != '' " >
+        user_create_user_id,
+      </if>
+      <if test="userUpdateTime != null and userUpdateTime != '' " >
+        user_update_time,
+      </if>
+      <if test="userUpdateUserId != null and userUpdateUserId != '' " >
+        user_update_user_id,
+      </if>
+      <if test="userUpdatePasswordTime != null and userUpdatePasswordTime != '' " >
+        user_update_password_time,
+      </if>
+      <if test="userStatus != null and userStatus != '' " >
+        user_status,
+      </if>
+      <if test="userSkin != null and userSkin != '' " >
+        user_skin,
+      </if>
+      <if test="userLevel != null and userLevel != '' " >
+        user_level,
+      </if>
+      <if test="userReserveA != null and userReserveA != '' " >
+        user_reserve_a,
+      </if>
+      <if test="userReserveB != null and userReserveB != '' " >
+        user_reserve_b,
+      </if>
+      <if test="userReserveC != null and userReserveC != '' " >
+        user_reserve_c,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null and userId != '' " >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null and orgId != '' " >
+        #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="userPassword != null and userPassword != '' " >
+        #{userPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null and userName != '' " >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userAge != null and userAge != '' " >
+        #{userAge,jdbcType=VARCHAR},
+      </if>
+      <if test="userSex != null and userSex != '' " >
+        #{userSex,jdbcType=VARCHAR},
+      </if>
+      <if test="userIdentity != null and userIdentity != '' " >
+        #{userIdentity,jdbcType=VARCHAR},
+      </if>
+      <if test="userAddress != null and userAddress != '' " >
+        #{userAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null and userPhone != '' " >
+        #{userPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="userMail != null and userMail != '' " >
+        #{userMail,jdbcType=VARCHAR},
+      </if>
+      <if test="userDesc != null and userDesc != '' " >
+        #{userDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="userImage != null and userImage != '' " >
+        #{userImage,jdbcType=VARCHAR},
+      </if>
+      <if test="userCreateTime != null and userCreateTime != '' " >
+        #{userCreateTime,jdbcType=DATE},
+      </if>
+      <if test="userCreateUserId != null and userCreateUserId != '' " >
+        #{userCreateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="userUpdateTime != null and userUpdateTime != '' " >
+        #{userUpdateTime,jdbcType=DATE},
+      </if>
+      <if test="userUpdateUserId != null and userUpdateUserId != '' " >
+        #{userUpdateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="userUpdatePasswordTime != null and userUpdatePasswordTime != '' " >
+        #{userUpdatePasswordTime,jdbcType=DATE},
+      </if>
+      <if test="userStatus != null and userStatus != '' " >
+        #{userStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="userSkin != null and userSkin != '' " >
+        #{userSkin,jdbcType=VARCHAR},
+      </if>
+      <if test="userLevel != null and userLevel != '' " >
+        #{userLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="userReserveA != null and userReserveA != '' " >
+        #{userReserveA,jdbcType=VARCHAR},
+      </if>
+      <if test="userReserveB != null and userReserveB != '' " >
+        #{userReserveB,jdbcType=VARCHAR},
+      </if>
+      <if test="userReserveC != null and userReserveC != '' " >
+        #{userReserveC,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.julongtech.system.dao.entity.SystemUserInfo" >
+    update system_user
+    <set >
+      <if test="orgId != null and orgId != ''" >
+        org_id = #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="userPassword != null and userPassword != ''" >
+        user_password = #{userPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null and userName != ''" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userAge != null and userAge != ''" >
+        user_age = #{userAge,jdbcType=VARCHAR},
+      </if>
+      <if test="userSex != null and userSex != ''" >
+        user_sex = #{userSex,jdbcType=VARCHAR},
+      </if>
+      <if test="userIdentity != null and userIdentity != ''" >
+        user_identity = #{userIdentity,jdbcType=VARCHAR},
+      </if>
+      <if test="userAddress != null and userAddress != ''" >
+        user_address = #{userAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null and userPhone != ''" >
+        user_phone = #{userPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="userMail != null and userMail != ''" >
+        user_mail = #{userMail,jdbcType=VARCHAR},
+      </if>
+      <if test="userDesc != null and userDesc != ''" >
+        user_desc = #{userDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="userImage != null and userImage != ''" >
+        user_image = #{userImage,jdbcType=VARCHAR},
+      </if>
+      <if test="userCreateTime != null and userCreateTime != ''" >
+        user_create_time = #{userCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userCreateUserId != null and userCreateUserId != ''" >
+        user_create_user_id = #{userCreateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="userUpdateTime != null and userUpdateTime != ''" >
+        user_update_time = #{userUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userUpdateUserId != null and userUpdateUserId != ''" >
+        user_update_user_id = #{userUpdateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="userUpdatePasswordTime != null and userUpdatePasswordTime != ''" >
+        user_update_password_time = #{userUpdatePasswordTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userStatus != null and userStatus != ''" >
+        user_status = #{userStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="userSkin != null and userSkin != ''" >
+        user_skin = #{userSkin,jdbcType=VARCHAR},
+      </if>
+      <if test="userLevel != null and userLevel != ''" >
+        user_level = #{userLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="userReserveA != null and userReserveA != ''" >
+        user_reserve_a = #{userReserveA,jdbcType=VARCHAR},
+      </if>
+      <if test="userReserveB != null and userReserveB != ''" >
+        user_reserve_b = #{userReserveB,jdbcType=VARCHAR},
+      </if>
+      <if test="userReserveC != null and userReserveC != ''" >
+        user_reserve_c = #{userReserveC,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.julongtech.system.dao.entity.SystemUserInfo" >
+    update system_user
+    set org_id = #{orgId,jdbcType=VARCHAR},
+      user_password = #{userPassword,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      user_age = #{userAge,jdbcType=VARCHAR},
+      user_sex = #{userSex,jdbcType=VARCHAR},
+      user_identity = #{userIdentity,jdbcType=VARCHAR},
+      user_address = #{userAddress,jdbcType=VARCHAR},
+      user_phone = #{userPhone,jdbcType=VARCHAR},
+      user_mail = #{userMail,jdbcType=VARCHAR},
+      user_desc = #{userDesc,jdbcType=VARCHAR},
+      user_image = #{userImage,jdbcType=VARCHAR},
+      user_create_time = #{userCreateTime,jdbcType=TIMESTAMP},
+      user_create_user_id = #{userCreateUserId,jdbcType=VARCHAR},
+      user_update_time = #{userUpdateTime,jdbcType=TIMESTAMP},
+      user_update_user_id = #{userUpdateUserId,jdbcType=VARCHAR},
+      user_update_password_time = #{userUpdatePasswordTime,jdbcType=TIMESTAMP},
+      user_status = #{userStatus,jdbcType=VARCHAR},
+      user_skin = #{userSkin,jdbcType=VARCHAR},
+      user_level = #{userLevel,jdbcType=VARCHAR},
+      user_reserve_a = #{userReserveA,jdbcType=VARCHAR},
+      user_reserve_b = #{userReserveB,jdbcType=VARCHAR},
+      user_reserve_c = #{userReserveC,jdbcType=VARCHAR}
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+</mapper>

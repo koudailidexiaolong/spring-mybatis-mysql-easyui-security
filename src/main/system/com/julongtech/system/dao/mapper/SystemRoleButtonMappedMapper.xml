@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.julongtech.system.dao.SystemRoleButtonMappedDao" >
+  <resultMap id="BaseResultMap" type="com.julongtech.system.service.dto.SystemRoleButtonMappedDTO" >
+    <id column="mapped_id" property="mappedId" jdbcType="INTEGER" />
+    <result column="role_id" property="roleId" jdbcType="INTEGER" />
+    <result column="menu_id" property="menuId" jdbcType="VARCHAR" />
+    <result column="button_id" property="buttonId" jdbcType="VARCHAR" />
+    <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    <result column="mapped_desc" property="mappedDesc" jdbcType="VARCHAR" />
+    <result column="mapped_create_time" property="mappedCreateTime" jdbcType="TIMESTAMP" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="mapped_update_time" property="mappedUpdateTime" jdbcType="TIMESTAMP" />
+    <result column="mapped_status" property="mappedStatus" jdbcType="VARCHAR" />
+    <result column="mapped_reserve_a" property="mappedReserveA" jdbcType="VARCHAR" />
+    <result column="mapped_reserve_b" property="mappedReserveB" jdbcType="VARCHAR" />
+    <result column="mapped_reserve_c" property="mappedReserveC" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    mapped_id, role_id, menu_id, button_id, org_id, mapped_desc, mapped_create_time, 
+    user_id, mapped_update_time, mapped_status, mapped_reserve_a, mapped_reserve_b, mapped_reserve_c
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from system_role_button_mapped
+    where mapped_id = #{mappedId,jdbcType=INTEGER}
+  </select>
+  <select id="selectBySelective" resultMap="BaseResultMap" parameterType="com.julongtech.system.service.dto.SystemRoleButtonMappedDTO" >
+    select 
+    <include refid="Base_Column_List" />
+    from system_role_button_mapped
+    <where >
+      <if test="mappedId != null and mappedId != ''" >
+         AND mapped_id = #{mappedId,jdbcType=INTEGER}
+      </if>
+      <if test="roleId != null and roleId != ''" >
+         AND role_id = #{roleId,jdbcType=INTEGER}
+      </if>
+      <if test="menuId != null and menuId != ''" >
+         AND menu_id = #{menuId,jdbcType=VARCHAR}
+      </if>
+      <if test="buttonId != null and buttonId != ''" >
+         AND button_id = #{buttonId,jdbcType=VARCHAR}
+      </if>
+      <if test="orgId != null and orgId != ''" >
+         AND org_id = #{orgId,jdbcType=VARCHAR}
+      </if>
+      <if test="mappedDesc != null and mappedDesc != ''" >
+         AND mapped_desc = #{mappedDesc,jdbcType=VARCHAR}
+      </if>
+      <if test="mappedCreateTime != null " >
+         AND mapped_create_time = #{mappedCreateTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="userId != null and userId != ''" >
+         AND user_id = #{userId,jdbcType=VARCHAR}
+      </if>
+      <if test="mappedUpdateTime != null " >
+         AND mapped_update_time = #{mappedUpdateTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="mappedStatus != null and mappedStatus != ''" >
+         AND mapped_status = #{mappedStatus,jdbcType=VARCHAR}
+      </if>
+      <if test="mappedReserveA != null and mappedReserveA != ''" >
+         AND mapped_reserve_a = #{mappedReserveA,jdbcType=VARCHAR}
+      </if>
+      <if test="mappedReserveB != null and mappedReserveB != ''" >
+         AND mapped_reserve_b = #{mappedReserveB,jdbcType=VARCHAR}
+      </if>
+      <if test="mappedReserveC != null and mappedReserveC != ''" >
+         AND mapped_reserve_c = #{mappedReserveC,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from system_role_button_mapped
+    where mapped_id = #{mappedId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByRoleId" parameterType="java.lang.Integer" >
+    delete from system_role_button_mapped
+    where role_id = #{roleId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.julongtech.system.dao.entity.SystemRoleButtonMappedInfo" useGeneratedKeys="true" keyProperty="mappedId">
+    insert into system_role_button_mapped (role_id, menu_id, 
+      button_id, org_id, mapped_desc, 
+      mapped_create_time, user_id, mapped_update_time, 
+      mapped_status, mapped_reserve_a, mapped_reserve_b, 
+      mapped_reserve_c)
+    values (#{roleId,jdbcType=INTEGER}, #{menuId,jdbcType=VARCHAR}, 
+      #{buttonId,jdbcType=VARCHAR}, #{orgId,jdbcType=VARCHAR}, #{mappedDesc,jdbcType=VARCHAR}, 
+      #{mappedCreateTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=VARCHAR}, #{mappedUpdateTime,jdbcType=TIMESTAMP}, 
+      #{mappedStatus,jdbcType=VARCHAR}, #{mappedReserveA,jdbcType=VARCHAR}, #{mappedReserveB,jdbcType=VARCHAR}, 
+      #{mappedReserveC,jdbcType=VARCHAR})
+  </insert>
+  
+   <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="mappedId">
+       <selectKey resultType ="java.lang.Integer" keyProperty= "mappedId"  order= "AFTER">
+               SELECT LAST_INSERT_ID()
+       </selectKey >
+     INSERT INTO 
+	      system_role_button_mapped (
+	      role_id, menu_id, button_id, org_id, mapped_desc, 
+      mapped_create_time, user_id, mapped_update_time, 
+      mapped_status, mapped_reserve_a, mapped_reserve_b, 
+      mapped_reserve_c)
+	 VALUES
+	<foreach collection="list" item="item" index="index" separator=",">
+  		  (
+  		  #{item.roleId,jdbcType=INTEGER}, #{item.menuId,jdbcType=VARCHAR}, #{item.buttonId,jdbcType=VARCHAR},
+	      #{item.orgId,jdbcType=VARCHAR},  #{item.mappedDesc,jdbcType=VARCHAR}, 
+	      #{item.mappedCreateTime,jdbcType=TIMESTAMP}, #{item.userId,jdbcType=VARCHAR}, #{item.mappedUpdateTime,jdbcType=TIMESTAMP}, 
+	      #{item.mappedStatus,jdbcType=VARCHAR}, #{item.mappedReserveA,jdbcType=VARCHAR}, #{item.mappedReserveB,jdbcType=VARCHAR}, 
+	      #{item.mappedReserveC,jdbcType=VARCHAR}
+	      )
+	</foreach>
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.julongtech.system.dao.entity.SystemRoleButtonMappedInfo" useGeneratedKeys="true" keyProperty="mappedId">
+    insert into system_role_button_mapped
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="roleId != null and roleId != '' " >
+        role_id,
+      </if>
+      <if test="menuId != null and menuId != '' " >
+        menu_id,
+      </if>
+      <if test="buttonId != null and buttonId != '' " >
+        button_id,
+      </if>
+      <if test="orgId != null and orgId != '' " >
+        org_id,
+      </if>
+      <if test="mappedDesc != null and mappedDesc != '' " >
+        mapped_desc,
+      </if>
+      <if test="mappedCreateTime != null " >
+        mapped_create_time,
+      </if>
+      <if test="userId != null and userId != '' " >
+        user_id,
+      </if>
+      <if test="mappedUpdateTime != null " >
+        mapped_update_time,
+      </if>
+      <if test="mappedStatus != null and mappedStatus != '' " >
+        mapped_status,
+      </if>
+      <if test="mappedReserveA != null and mappedReserveA != '' " >
+        mapped_reserve_a,
+      </if>
+      <if test="mappedReserveB != null and mappedReserveB != '' " >
+        mapped_reserve_b,
+      </if>
+      <if test="mappedReserveC != null and mappedReserveC != '' " >
+        mapped_reserve_c,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="roleId != null and roleId != '' " >
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="menuId != null and menuId != '' " >
+        #{menuId,jdbcType=VARCHAR},
+      </if>
+      <if test="buttonId != null and buttonId != '' " >
+        #{buttonId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null and orgId != '' " >
+        #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedDesc != null and mappedDesc != '' " >
+        #{mappedDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedCreateTime != null " >
+        #{mappedCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null and userId != '' " >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedUpdateTime != null " >
+        #{mappedUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="mappedStatus != null and mappedStatus != '' " >
+        #{mappedStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedReserveA != null and mappedReserveA != '' " >
+        #{mappedReserveA,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedReserveB != null and mappedReserveB != '' " >
+        #{mappedReserveB,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedReserveC != null and mappedReserveC != '' " >
+        #{mappedReserveC,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.julongtech.system.dao.entity.SystemRoleButtonMappedInfo" >
+    update system_role_button_mapped
+    <set >
+      <if test="roleId != null and roleId != ''" >
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="menuId != null and menuId != ''" >
+        menu_id = #{menuId,jdbcType=VARCHAR},
+      </if>
+      <if test="buttonId != null and buttonId != ''" >
+        button_id = #{buttonId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null and orgId != ''" >
+        org_id = #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedDesc != null and mappedDesc != ''" >
+        mapped_desc = #{mappedDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedCreateTime != null " >
+        mapped_create_time = #{mappedCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null and userId != ''" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedUpdateTime != null " >
+        mapped_update_time = #{mappedUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="mappedStatus != null and mappedStatus != ''" >
+        mapped_status = #{mappedStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedReserveA != null and mappedReserveA != ''" >
+        mapped_reserve_a = #{mappedReserveA,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedReserveB != null and mappedReserveB != ''" >
+        mapped_reserve_b = #{mappedReserveB,jdbcType=VARCHAR},
+      </if>
+      <if test="mappedReserveC != null and mappedReserveC != ''" >
+        mapped_reserve_c = #{mappedReserveC,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where mapped_id = #{mappedId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.julongtech.system.dao.entity.SystemRoleButtonMappedInfo" >
+    update system_role_button_mapped
+    set role_id = #{roleId,jdbcType=INTEGER},
+      menu_id = #{menuId,jdbcType=VARCHAR},
+      button_id = #{buttonId,jdbcType=VARCHAR},
+      org_id = #{orgId,jdbcType=VARCHAR},
+      mapped_desc = #{mappedDesc,jdbcType=VARCHAR},
+      mapped_create_time = #{mappedCreateTime,jdbcType=TIMESTAMP},
+      user_id = #{userId,jdbcType=VARCHAR},
+      mapped_update_time = #{mappedUpdateTime,jdbcType=TIMESTAMP},
+      mapped_status = #{mappedStatus,jdbcType=VARCHAR},
+      mapped_reserve_a = #{mappedReserveA,jdbcType=VARCHAR},
+      mapped_reserve_b = #{mappedReserveB,jdbcType=VARCHAR},
+      mapped_reserve_c = #{mappedReserveC,jdbcType=VARCHAR}
+    where mapped_id = #{mappedId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:task="http://www.springframework.org/schema/task" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd 
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd">
+	<description>定时任务</description>
+	<task:scheduler id="scheduler" pool-size="10"/>
+	<task:executor id="executor" pool-size="10"/>
+
+	<!-- 
+	CRON表达式    含义 
+	"0 0 12 * * ?"    每天中午十二点触发 
+	"0 15 10 ? * *"    每天早上10：15触发 
+	"0 15 10 * * ?"    每天早上10：15触发 
+	"0 15 10 * * ? *"    每天早上10：15触发 
+	"0 15 10 * * ? 2005"    2005年的每天早上10：15触发 
+	"0 * 14 * * ?"    每天从下午2点开始到2点59分每分钟一次触发 
+	"0 0/5 14 * * ?"    每天从下午2点开始到2：55分结束每5分钟一次触发 
+	"0 0/5 14,18 * * ?"    每天的下午2点至2：55和6点至6点55分两个时间段内每5分钟一次触发 
+	"0 0-5 14 * * ?"    每天14:00至14:05每分钟一次触发 
+	"0 10,44 14 ? 3 WED"    三月的每周三的14：10和14：44触发 
+	"0 15 10 ? * MON-FRI"    每个周一、周二、周三、周四、周五的10：15触发
+	 -->
+   <!--  <task:scheduled-tasks scheduler="scheduler" > -->
+    <!-- 每一分钟执行一次  周一到周五 */10 * * * * MON-FRI -->
+    <!-- </task:scheduled-tasks> -->
+    
+    
+</beans>

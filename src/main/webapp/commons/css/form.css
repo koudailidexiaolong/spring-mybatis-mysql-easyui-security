@@ -1,0 +1,10 @@
+@CHARSET "UTF-8";
+/*表单自适应样式
+		48% 代表只显示 两行
+		350px 是以这个为定长
+		*/
+#paramForm div {
+	text-align: right;
+	width: 48%;
+	float: left;
+}

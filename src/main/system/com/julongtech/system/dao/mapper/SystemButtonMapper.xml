@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.julongtech.system.dao.SystemButtonDao" >
+  <resultMap id="BaseResultMap" type="com.julongtech.system.service.dto.SystemButtonDTO" >
+     <id column="button_id" property="buttonId" jdbcType="VARCHAR" />
+    <result column="button_name" property="buttonName" jdbcType="VARCHAR" />
+    <result column="button_code" property="buttonCode" jdbcType="VARCHAR" />
+    <result column="button_url" property="buttonUrl" jdbcType="VARCHAR" />
+    <result column="button_status" property="buttonStatus" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="button_ico" property="buttonIco" jdbcType="VARCHAR" />
+    <result column="menu_id" property="menuId" jdbcType="VARCHAR" />
+    <result column="button_order" property="buttonOrder" jdbcType="DOUBLE" />
+    <result column="button_create_time" property="buttonCreateTime" jdbcType="TIMESTAMP" />
+    <result column="button_update_time" property="buttonUpdateTime" jdbcType="TIMESTAMP" />
+    <result column="button_father" property="buttonFather" jdbcType="VARCHAR" />
+    <result column="button_reserve_a" property="buttonReserveA" jdbcType="VARCHAR" />
+    <result column="button_reserve_b" property="buttonReserveB" jdbcType="VARCHAR" />
+    <result column="button_reserve_c" property="buttonReserveC" jdbcType="VARCHAR" />
+    <result column="button_create_user_name" property="buttonCreateUserName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    button_id, button_name, button_code, button_url, button_status, user_id, button_ico, 
+    menu_id, button_order, button_create_time, button_update_time, button_father, button_reserve_a, 
+    button_reserve_b, button_reserve_c
+  </sql>
+   <sql id="join_sql">
+  	SELECT 
+	    a.button_id, a.button_name, a.button_code, a.button_url, a.button_status, a.user_id, a.button_ico, 
+	    a.menu_id, a.button_order, a.button_create_time, a.button_update_time, a.button_father, a.button_reserve_a, 
+	    a.button_reserve_b, a.button_reserve_c,
+	    b.user_name as button_create_user_name
+    FROM 
+    	system_button a
+    LEFT JOIN system_user b on a.user_id = b.user_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    <include refid="join_sql" />
+    where button_id = #{buttonId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectBySelective" resultMap="BaseResultMap" parameterType="com.julongtech.system.service.dto.SystemButtonDTO" >
+     <include refid="join_sql" />
+    <where>
+      <if test="buttonId != null and buttonId != ''" >
+        AND button_id = #{buttonId,jdbcType=VARCHAR}
+      </if>
+      <if test="buttonName != null and buttonName != ''" >
+        AND button_name LIKE #{buttonName,jdbcType=VARCHAR}
+      </if>
+      <if test="buttonCode != null and buttonCode != ''" >
+        AND button_code = #{buttonCode,jdbcType=VARCHAR}
+      </if>
+      <if test="buttonUrl != null and buttonUrl != ''" >
+        AND button_url = #{buttonUrl,jdbcType=VARCHAR}
+      </if>
+      <if test="buttonStatus != null and buttonStatus != ''" >
+        AND button_status = #{buttonStatus,jdbcType=VARCHAR}
+      </if>
+      <if test="userId != null and userId != ''" >
+        AND user_id = #{userId,jdbcType=VARCHAR}
+      </if>
+      <if test="buttonIco != null and buttonIco != ''" >
+        AND button_ico = #{buttonIco,jdbcType=VARCHAR}
+      </if>
+      <if test="menuId != null and menuId != ''" >
+        AND menu_id = #{menuId,jdbcType=VARCHAR}
+      </if>
+      <if test="buttonOrder != null and buttonOrder != ''" >
+        AND button_order = #{buttonOrder,jdbcType=DECIMAL}
+      </if>
+      <if test="buttonFather != null and buttonFather != ''" >
+        AND button_father = #{buttonFather,jdbcType=VARCHAR}
+      </if>
+    </where>
+    ORDER BY button_id
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from system_button
+    where button_id = #{buttonId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.julongtech.system.dao.entity.SystemButtonInfo" >
+    insert into system_button (button_id, button_name, button_code, 
+      button_url, button_status, user_id, 
+      button_ico, menu_id, button_order, 
+      button_create_time, button_update_time, button_father, 
+      button_reserve_a, button_reserve_b, button_reserve_c
+      )
+    values (#{buttonId,jdbcType=VARCHAR}, #{buttonName,jdbcType=VARCHAR}, #{buttonCode,jdbcType=VARCHAR}, 
+      #{buttonUrl,jdbcType=VARCHAR}, #{buttonStatus,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
+      #{buttonIco,jdbcType=VARCHAR}, #{menuId,jdbcType=VARCHAR}, #{buttonOrder,jdbcType=DECIMAL}, 
+      #{buttonCreateTime,jdbcType=TIMESTAMP}, #{buttonUpdateTime,jdbcType=TIMESTAMP}, #{buttonFather,jdbcType=VARCHAR}, 
+      #{buttonReserveA,jdbcType=VARCHAR}, #{buttonReserveB,jdbcType=VARCHAR}, #{buttonReserveC,jdbcType=VARCHAR}
+      )
+  </insert>
+ <insert id="insertSelective" parameterType="com.julongtech.system.dao.entity.SystemButtonInfo" >
+    insert into system_button
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="buttonId != null and buttonId != '' " >
+        button_id,
+      </if>
+      <if test="buttonName != null and buttonName != '' " >
+        button_name,
+      </if>
+      <if test="buttonCode != null and buttonCode != '' " >
+        button_code,
+      </if>
+      <if test="buttonUrl != null and buttonUrl != '' " >
+        button_url,
+      </if>
+      <if test="buttonStatus != null and buttonStatus != '' " >
+        button_status,
+      </if>
+      <if test="userId != null and userId != '' " >
+        user_id,
+      </if>
+      <if test="buttonIco != null and buttonIco != '' " >
+        button_ico,
+      </if>
+      <if test="menuId != null and menuId != '' " >
+        menu_id,
+      </if>
+      <if test="buttonOrder != null and buttonOrder != '' " >
+        button_order,
+      </if>
+      <if test="buttonCreateTime != null and buttonCreateTime != '' " >
+        button_create_time,
+      </if>
+      <if test="buttonUpdateTime != null and buttonUpdateTime != '' " >
+        button_update_time,
+      </if>
+      <if test="buttonFather != null and buttonFather != '' " >
+        button_father,
+      </if>
+      <if test="buttonReserveA != null and buttonReserveA != '' " >
+        button_reserve_a,
+      </if>
+      <if test="buttonReserveB != null and buttonReserveB != '' " >
+        button_reserve_b,
+      </if>
+      <if test="buttonReserveC != null and buttonReserveC != '' " >
+        button_reserve_c,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="buttonId != null and buttonId != '' " >
+        #{buttonId,jdbcType=VARCHAR},
+      </if>
+      <if test="buttonName != null and buttonName != '' " >
+        #{buttonName,jdbcType=VARCHAR},
+      </if>
+      <if test="buttonCode != null and buttonCode != '' " >
+        #{buttonCode,jdbcType=VARCHAR},
+      </if>
+      <if test="buttonUrl != null and buttonUrl != '' " >
+        #{buttonUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="buttonStatus != null and buttonStatus != '' " >
+        #{buttonStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null and userId != '' " >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="buttonIco != null and buttonIco != '' " >
+        #{buttonIco,jdbcType=VARCHAR},
+      </if>
+      <if test="menuId != null and menuId != '' " >
+        #{menuId,jdbcType=VARCHAR},
+      </if>
+      <if test="buttonOrder != null and buttonOrder != '' " >
+        #{buttonOrder,jdbcType=DOUBLE},
+      </if>
+      <if test="buttonCreateTime != null and buttonCreateTime != '' " >
+        #{buttonCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="buttonUpdateTime != null and buttonUpdateTime != '' " >
+        #{buttonUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="buttonFather != null and buttonFather != '' " >
+        #{buttonFather,jdbcType=VARCHAR},
+      </if>
+      <if test="buttonReserveA != null and buttonReserveA != '' " >
+        #{buttonReserveA,jdbcType=VARCHAR},
+      </if>
+      <if test="buttonReserveB != null and buttonReserveB != '' " >
+        #{buttonReserveB,jdbcType=VARCHAR},
+      </if>
+      <if test="buttonReserveC != null and buttonReserveC != '' " >
+        #{buttonReserveC,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+ <update id="updateByPrimaryKeySelective" parameterType="com.julongtech.system.dao.entity.SystemButtonInfo" >
+    update system_button
+    <set >
+      <if test="buttonName != null and buttonName != ''" >
+        button_name = #{buttonName,jdbcType=VARCHAR},
+      </if>
+      <if test="buttonCode != null and buttonCode != ''" >
+        button_code = #{buttonCode,jdbcType=VARCHAR},
+      </if>
+      <if test="buttonUrl != null and buttonUrl != ''" >
+        button_url = #{buttonUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="buttonStatus != null and buttonStatus != ''" >
+        button_status = #{buttonStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null and userId != ''" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="buttonIco != null and buttonIco != ''" >
+        button_ico = #{buttonIco,jdbcType=VARCHAR},
+      </if>
+      <if test="menuId != null and menuId != ''" >
+        menu_id = #{menuId,jdbcType=VARCHAR},
+      </if>
+      <if test="buttonOrder != null and buttonOrder != ''" >
+        button_order = #{buttonOrder,jdbcType=DOUBLE},
+      </if>
+      <if test="buttonCreateTime != null and buttonCreateTime != ''" >
+        button_create_time = #{buttonCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="buttonUpdateTime != null and buttonUpdateTime != ''" >
+        button_update_time = #{buttonUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="buttonFather != null and buttonFather != ''" >
+        button_father = #{buttonFather,jdbcType=VARCHAR},
+      </if>
+      <if test="buttonReserveA != null and buttonReserveA != ''" >
+        button_reserve_a = #{buttonReserveA,jdbcType=VARCHAR},
+      </if>
+      <if test="buttonReserveB != null and buttonReserveB != ''" >
+        button_reserve_b = #{buttonReserveB,jdbcType=VARCHAR},
+      </if>
+      <if test="buttonReserveC != null and buttonReserveC != ''" >
+        button_reserve_c = #{buttonReserveC,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where button_id = #{buttonId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.julongtech.system.dao.entity.SystemButtonInfo" >
+   update system_button
+    set button_name = #{buttonName,jdbcType=VARCHAR},
+      button_code = #{buttonCode,jdbcType=VARCHAR},
+      button_url = #{buttonUrl,jdbcType=VARCHAR},
+      button_status = #{buttonStatus,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      button_ico = #{buttonIco,jdbcType=VARCHAR},
+      menu_id = #{menuId,jdbcType=VARCHAR},
+      button_order = #{buttonOrder,jdbcType=DOUBLE},
+      button_create_time = #{buttonCreateTime,jdbcType=TIMESTAMP},
+      button_update_time = #{buttonUpdateTime,jdbcType=TIMESTAMP},
+      button_father = #{buttonFather,jdbcType=VARCHAR},
+      button_reserve_a = #{buttonReserveA,jdbcType=VARCHAR},
+      button_reserve_b = #{buttonReserveB,jdbcType=VARCHAR},
+      button_reserve_c = #{buttonReserveC,jdbcType=VARCHAR}
+    where button_id = #{buttonId,jdbcType=VARCHAR}
+  </update>
+</mapper>

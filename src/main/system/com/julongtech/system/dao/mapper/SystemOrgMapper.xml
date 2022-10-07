@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.julongtech.system.dao.SystemOrgDao" >
+  <resultMap id="BaseResultMap" type="com.julongtech.system.service.dto.SystemOrgDTO" >
+    <id column="org_id" property="orgId" jdbcType="VARCHAR" />
+    <result column="org_phone" property="orgPhone" jdbcType="VARCHAR" />
+    <result column="org_full_name" property="orgFullName" jdbcType="VARCHAR" />
+    <result column="org_name" property="orgName" jdbcType="VARCHAR" />
+    <result column="org_parent_id" property="orgParentId" jdbcType="VARCHAR" />
+    <result column="org_parent_name" property="orgParentName" jdbcType="VARCHAR" />
+    <result column="org_address" property="orgAddress" jdbcType="VARCHAR" />
+    <result column="org_level" property="orgLevel" jdbcType="VARCHAR" />
+    <result column="org_leaf" property="orgLeaf" jdbcType="VARCHAR" />
+    <result column="org_type" property="orgType" jdbcType="VARCHAR" />
+    <result column="org_area" property="orgArea" jdbcType="VARCHAR" />
+    <result column="org_area_code" property="orgAreaCode" jdbcType="VARCHAR" />
+    <result column="org_create_date" property="orgCreateDate" jdbcType="TIMESTAMP" />
+    <result column="org_status" property="orgStatus" jdbcType="VARCHAR" />
+    <result column="org_create_time" property="orgCreateTime" jdbcType="TIMESTAMP" />
+    <result column="org_create_user_id" property="orgCreateUserId" jdbcType="VARCHAR" />
+    <result column="org_update_time" property="orgUpdateTime" jdbcType="TIMESTAMP" />
+    <result column="org_update_user_id" property="orgUpdateUserLd" jdbcType="VARCHAR" />
+    <result column="org_desc" property="orgDesc" jdbcType="VARCHAR" />
+    <result column="org_reserve_a" property="orgReserveA" jdbcType="VARCHAR" />
+    <result column="org_reserve_b" property="orgReserveB" jdbcType="VARCHAR" />
+    <result column="org_reserve_c" property="orgReserveC" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    org_id, org_phone, org_full_name, org_name, org_parent_id, org_parent_name, 
+    org_address, org_level, org_leaf, org_type, org_area, org_area_code,org_create_date,
+    org_status, org_create_time, org_create_user_id, org_update_time, org_update_user_id, 
+    org_desc, org_reserve_a, org_reserve_b, org_reserve_c
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from SYSTEM_ORG
+    where org_id = #{orgId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectBySelective" resultMap="BaseResultMap" parameterType="com.julongtech.system.service.dto.SystemOrgDTO" >
+    select 
+     <include refid="Base_Column_List" />
+    from SYSTEM_ORG
+    <where>
+       <if test="orgStatus != null and orgStatus != ''" >
+        AND ORG_STATUS = #{orgStatus,jdbcType=VARCHAR}
+      </if>
+      <if test="orgLeaf != null and orgLeaf != ''" >
+        AND ORG_LEAF = #{orgLeaf,jdbcType=VARCHAR}
+      </if>
+      <if test="orgId != null and orgId != ''" >
+        AND org_id = #{orgId,jdbcType=VARCHAR}
+      </if>
+      <if test="orgFullName != null and orgFullName != ''" >
+        AND ORG_FULL_NAME = #{orgFullName,jdbcType=VARCHAR}
+      </if>
+      <if test="orgName != null and orgName != ''" >
+        AND ORG_NAME LIKE #{orgName,jdbcType=VARCHAR}
+      </if>
+      <if test="orgParentId != null and orgParentId != ''" >
+        AND ORG_PARENT_ID = #{orgParentId,jdbcType=VARCHAR}
+      </if>
+      <if test="orgLevel != null and orgLevel != ''" >
+        AND org_level = #{orgLevel,jdbcType=VARCHAR}
+      </if>
+      <if test="orgType != null and orgType != ''" >
+        AND org_type = #{orgType,jdbcType=VARCHAR}
+      </if>
+    </where>
+     ORDER BY org_id
+  </select>
+  <select id="selectByLevel" resultMap="BaseResultMap" parameterType="com.julongtech.system.service.dto.SystemOrgDTO">
+  	select 
+      <include refid="Base_Column_List" />
+    from SYSTEM_ORG
+  	WHERE  org_level = #{orgLevel,jdbcType=VARCHAR} AND ORG_STATUS = #{orgStatus,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="com.julongtech.system.dao.entity.SystemOrgInfo" >
+    delete from SYSTEM_ORG
+    where org_id = #{orgId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.julongtech.system.dao.entity.SystemOrgInfo" >
+    insert into SYSTEM_ORG (org_id,org_leaf,org_phone, 
+      org_full_name, org_name, org_parent_id, 
+      org_parent_name, org_address, org_level, 
+      org_type, org_area, org_area_code, org_create_date,
+      org_status, 
+      org_create_time, org_create_user_id, org_update_time, 
+      org_update_user_id, org_desc, org_reserve_a, 
+      org_reserve_b, org_reserve_c)
+    values (#{orgId,jdbcType=VARCHAR},#{orgLeaf,jdbcType=VARCHAR}, #{orgPhone,jdbcType=VARCHAR}, 
+      #{orgFullName,jdbcType=VARCHAR}, #{orgName,jdbcType=VARCHAR}, #{orgParentId,jdbcType=VARCHAR}, 
+      #{orgParentName,jdbcType=VARCHAR}, #{orgAddress,jdbcType=VARCHAR}, #{orgLevel,jdbcType=VARCHAR}, 
+      #{orgType,jdbcType=VARCHAR}, #{orgArea,jdbcType=VARCHAR}, #{orgAreaCode,jdbcType=VARCHAR}, #{orgCreateDate,jdbcType=DATE}, 
+      #{orgStatus,jdbcType=VARCHAR}, 
+      #{orgCreateTime,jdbcType=TIMESTAMP}, #{orgCreateUserId,jdbcType=VARCHAR}, #{orgUpdateTime,jdbcType=DATE}, 
+      #{orgUpdateUserId,jdbcType=VARCHAR}, #{orgDesc,jdbcType=VARCHAR}, #{orgReserveA,jdbcType=VARCHAR}, 
+      #{orgReserveB,jdbcType=VARCHAR}, #{orgReserveC,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.julongtech.system.dao.entity.SystemOrgInfo" >
+    insert into SYSTEM_ORG
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="orgId != null and orgId != '' " >
+        org_id,
+      </if>
+      <if test="orgLeaf != null and orgLeaf != '' " >
+        ORG_LEAF,
+      </if>
+      <if test="orgPhone != null and orgPhone != '' " >
+        ORG_PHONE,
+      </if>
+      <if test="orgFullName != null and orgFullName != '' " >
+        ORG_FULL_NAME,
+      </if>
+      <if test="orgName != null and orgName != '' " >
+        ORG_NAME,
+      </if>
+      <if test="orgParentId != null and orgParentId != '' " >
+        ORG_PARENT_ID,
+      </if>
+      <if test="orgParentName != null and orgParentName != '' " >
+        ORG_PARENT_NAME,
+      </if>
+      <if test="orgAddress != null and orgAddress != '' " >
+        ORG_ADDRESS,
+      </if>
+      <if test="orgLevel != null and orgLevel != '' " >
+        org_level,
+      </if>
+      <if test="orgType != null and orgType != '' " >
+        org_type,
+      </if>
+      <if test="orgArea != null and orgArea != '' " >
+        ORG_AREA,
+      </if>
+      <if test="orgAreaCode != null and orgAreaCode != '' " >
+        ORG_AREA_CODE,
+      </if>
+      <if test="orgCreateDate != null and orgCreateDate != '' " >
+        org_create_date,
+      </if>
+      <if test="orgStatus != null and orgStatus != '' " >
+        ORG_STATUS,
+      </if>
+      <if test="orgCreateTime != null and orgCreateTime != '' " >
+        ORG_CREATE_TIME,
+      </if>
+      <if test="orgCreateUserId != null and orgCreateUserId != '' " >
+        ORG_CREATE_USER_ID,
+      </if>
+      <if test="orgUpdateTime != null and orgUpdateTime != '' " >
+        ORG_UPDATE_TIME,
+      </if>
+      <if test="orgUpdateUserId != null and orgUpdateUserId != '' " >
+        ORG_UPDATE_USER_LD,
+      </if>
+      <if test="orgDesc != null and orgDesc != '' " >
+        ORG_DESC,
+      </if>
+      <if test="orgReserveA != null and orgReserveA != '' " >
+        ORG_RESERVE_A,
+      </if>
+      <if test="orgReserveB != null and orgReserveB != '' " >
+        ORG_RESERVE_B,
+      </if>
+      <if test="orgReserveC != null and orgReserveC != '' " >
+        ORG_RESERVE_C,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="orgId != null and orgId != '' " >
+        #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgLeaf != null and orgLeaf != '' " >
+        #{orgLeaf,jdbcType=VARCHAR},
+      </if>
+      <if test="orgPhone != null and orgPhone != '' " >
+        #{orgPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="orgFullName != null and orgFullName != '' " >
+        #{orgFullName,jdbcType=VARCHAR},
+      </if>
+      <if test="orgName != null and orgName != '' " >
+        #{orgName,jdbcType=VARCHAR},
+      </if>
+      <if test="orgParentId != null and orgParentId != '' " >
+        #{orgParentId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgParentName != null and orgParentName != '' " >
+        #{orgParentName,jdbcType=VARCHAR},
+      </if>
+      <if test="orgAddress != null and orgAddress != '' " >
+        #{orgAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="orgLevel != null and orgLevel != '' " >
+        #{orgLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="orgType != null and orgType != '' " >
+        #{orgType,jdbcType=VARCHAR},
+      </if>
+      <if test="orgArea != null and orgArea != '' " >
+        #{orgArea,jdbcType=VARCHAR},
+      </if>
+      <if test="orgAreaCode != null and orgAreaCode != '' " >
+        #{orgAreaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="orgCreateDate != null and orgCreateDate != '' " >
+        #{orgCreateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orgStatus != null and orgStatus != '' " >
+        #{orgStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="orgCreateTime != null and orgCreateTime != '' " >
+        #{orgCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orgCreateUserId != null and orgCreateUserId != '' " >
+        #{orgCreateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgUpdateTime != null and orgUpdateTime != '' " >
+        #{orgUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orgUpdateUserId != null and orgUpdateUserId != '' " >
+        #{orgUpdateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgDesc != null and orgDesc != '' " >
+        #{orgDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="orgReserveA != null and orgReserveA != '' " >
+        #{orgReserveA,jdbcType=VARCHAR},
+      </if>
+      <if test="orgReserveB != null and orgReserveB != '' " >
+        #{orgReserveB,jdbcType=VARCHAR},
+      </if>
+      <if test="orgReserveC != null and orgReserveC != '' " >
+        #{orgReserveC,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.julongtech.system.dao.entity.SystemOrgInfo" >
+    update SYSTEM_ORG
+    <set >
+      <if test="orgPhone != null and orgPhone != ''" >
+        ORG_PHONE = #{orgPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="orgFullName != null and orgFullName != ''" >
+        ORG_FULL_NAME = #{orgFullName,jdbcType=VARCHAR},
+      </if>
+      <if test="orgName != null and orgName != ''" >
+        ORG_NAME = #{orgName,jdbcType=VARCHAR},
+      </if>
+      <if test="orgParentId != null and orgParentId != ''" >
+        ORG_PARENT_ID = #{orgParentId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgParentName != null and orgParentName != ''" >
+        ORG_PARENT_NAME = #{orgParentName,jdbcType=VARCHAR},
+      </if>
+      <if test="orgAddress != null and orgAddress != ''" >
+        ORG_ADDRESS = #{orgAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="orgLevel != null and orgLevel != ''" >
+        org_level = #{orgLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="orgLeaf != null and orgLeaf != ''" >
+        ORG_LEAF = #{orgLeaf,jdbcType=VARCHAR},
+      </if>
+      <if test="orgType != null and orgType != ''" >
+        org_type = #{orgType,jdbcType=VARCHAR},
+      </if>
+      <if test="orgArea != null and orgArea != ''" >
+        ORG_AREA = #{orgArea,jdbcType=VARCHAR},
+      </if>
+      <if test="orgAreaCode != null and orgAreaCode != ''" >
+        ORG_AREA_CODE = #{orgAreaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="orgCreateDate != null and orgCreateDate != ''" >
+        ORG_CREATE_DATE = #{orgCreateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orgStatus != null and orgStatus != ''" >
+        ORG_STATUS = #{orgStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="orgCreateTime != null and orgCreateTime != ''" >
+        ORG_CREATE_TIME = #{orgCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orgCreateUserId != null and orgCreateUserId != ''" >
+        ORG_CREATE_USER_ID = #{orgCreateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgUpdateTime != null and orgUpdateTime != ''" >
+        ORG_UPDATE_TIME = #{orgUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orgUpdateUserId != null and orgUpdateUserId != ''" >
+        ORG_UPDATE_USER_ID = #{orgUpdateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgDesc != null and orgDesc != ''" >
+        ORG_DESC = #{orgDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="orgReserveA != null and orgReserveA != ''" >
+        ORG_RESERVE_A = #{orgReserveA,jdbcType=VARCHAR},
+      </if>
+      <if test="orgReserveB != null and orgReserveB != ''" >
+        ORG_RESERVE_B = #{orgReserveB,jdbcType=VARCHAR},
+      </if>
+      <if test="orgReserveC != null and orgReserveC != ''" >
+        ORG_RESERVE_C = #{orgReserveC,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where  org_id = #{orgId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.julongtech.system.dao.entity.SystemOrgInfo" >
+    update SYSTEM_ORG
+    set
+      ORG_PHONE = #{orgPhone,jdbcType=VARCHAR},
+      ORG_FULL_NAME = #{orgFullName,jdbcType=VARCHAR},
+      ORG_NAME = #{orgName,jdbcType=VARCHAR},
+      ORG_PARENT_ID = #{orgParentId,jdbcType=VARCHAR},
+      ORG_PARENT_NAME = #{orgParentName,jdbcType=VARCHAR},
+      ORG_ADDRESS = #{orgAddress,jdbcType=VARCHAR},
+      ORG_LEVEL = #{orgLevel,jdbcType=VARCHAR},
+      ORG_LEAF = #{orgLeaf,jdbcType=VARCHAR},
+      org_type = #{orgType,jdbcType=VARCHAR},
+      ORG_AREA = #{orgArea,jdbcType=VARCHAR},
+      ORG_AREA_CODE = #{orgAreaCode,jdbcType=VARCHAR},
+      ORG_CREATE_DATE = #{orgCreateDate,jdbcType=TIMESTAMP},
+      ORG_STATUS = #{orgStatus,jdbcType=VARCHAR},
+      ORG_CREATE_TIME = #{orgCreateTime,jdbcType=TIMESTAMP},
+      ORG_CREATE_USER_ID = #{orgCreateUserId,jdbcType=VARCHAR},
+      ORG_UPDATE_TIME = #{orgUpdateTime,jdbcType=TIMESTAMP},
+      ORG_UPDATE_USER_ID = #{orgUpdateUserId,jdbcType=VARCHAR},
+      ORG_DESC = #{orgDesc,jdbcType=VARCHAR},
+      ORG_RESERVE_A = #{orgReserveA,jdbcType=VARCHAR},
+      ORG_RESERVE_B = #{orgReserveB,jdbcType=VARCHAR},
+      ORG_RESERVE_C = #{orgReserveC,jdbcType=VARCHAR}
+    where  org_id = #{orgId,jdbcType=VARCHAR}
+  </update>
+   <!-- 查询是否存在-->
+  <select id="selectCount" resultType="int" parameterType="com.julongtech.system.service.dto.SystemOrgDTO" >
+  	SELECT COUNT(0) FROM SYSTEM_ORG 
+  	<where>
+  	 <if test="orgId != null and orgId != ''" >
+        AND org_id = #{orgId,jdbcType=VARCHAR}
+      </if>
+       <if test="orgLevel != null and orgLevel != ''" >
+        AND org_level = #{orgLevel,jdbcType=VARCHAR}
+      </if>
+      <if test="orgType != null and orgType != ''" >
+        AND org_type = #{orgType,jdbcType=VARCHAR}
+      </if>
+      </where> 
+  </select>
+</mapper>

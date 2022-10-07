@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.julongtech.system.dao.SystemLoggerDao" >
+  <resultMap id="BaseResultMap" type="com.julongtech.system.service.dto.SystemLoggerDTO" >
+    <id column="LOGGER_ID" property="loggerId" jdbcType="VARCHAR" />
+    <result column="LOGGER_TYPE" property="loggerType" jdbcType="VARCHAR" />
+    <result column="LOGGER_TYPE_NAME" property="loggerTypeName" jdbcType="VARCHAR" />
+    <result column="LOGGER_CREATE_TIME" property="loggerCreateTime" jdbcType="TIMESTAMP" />
+    <result column="ORG_ID" property="orgId" jdbcType="VARCHAR" />
+    <result column="USER_ID" property="userId" jdbcType="VARCHAR" />
+    <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+    <result column="LOGGER_IP" property="loggerIp" jdbcType="VARCHAR" />
+    <result column="LOGGER_MODULE" property="loggerModule" jdbcType="VARCHAR" />
+    <result column="LOGGER_MODULE_METHOD" property="loggerModuleMethod" jdbcType="VARCHAR" />
+    <result column="LOGGER_RESPONSE_TIME" property="loggerResponseTime" jdbcType="VARCHAR" />
+    <result column="LOGGER_OPERATING_SYSTEM" property="loggerOperatingSystem" jdbcType="VARCHAR" />
+    <result column="LOGGER_BROWSER_TYPE" property="loggerBrowserType" jdbcType="VARCHAR" />
+    <result column="LOGGER_BROWSER_VERSION" property="loggerBrowserVersion" jdbcType="VARCHAR" />
+    <result column="LOGGER_DESCRIPTION" property="loggerDescription" jdbcType="VARCHAR" />
+    <result column="LOGGER_RESERVE_A" property="loggerReserveA" jdbcType="VARCHAR" />
+    <result column="LOGGER_RESERVE_B" property="loggerReserveB" jdbcType="VARCHAR" />
+    <result column="LOGGER_RESERVE_C" property="loggerReserveC" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    LOGGER_ID, LOGGER_TYPE, LOGGER_TYPE_NAME, LOGGER_CREATE_TIME, ORG_ID, USER_ID, USER_NAME, 
+    LOGGER_IP, LOGGER_MODULE, LOGGER_MODULE_METHOD, LOGGER_RESPONSE_TIME, LOGGER_OPERATING_SYSTEM,LOGGER_BROWSER_TYPE,LOGGER_BROWSER_VERSION,
+    LOGGER_DESCRIPTION, LOGGER_RESERVE_A, LOGGER_RESERVE_B, LOGGER_RESERVE_C
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from SYSTEM_LOGGER
+    where LOGGER_ID = #{loggerId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectBySelective" resultMap="BaseResultMap" parameterType="com.julongtech.system.service.dto.SystemLoggerDTO" >
+    select 
+    <include refid="Base_Column_List" />
+    from SYSTEM_LOGGER
+    <where>
+      <if test="loggerId != null and loggerId != ''" >
+        AND LOGGER_ID = #{loggerId,jdbcType=VARCHAR}
+      </if>
+      <if test="loggerType != null and loggerType != ''" >
+        AND LOGGER_TYPE = #{loggerType,jdbcType=VARCHAR}
+      </if>
+      <if test="loggerModule != null and loggerModule != ''" >
+        AND LOGGER_MODULE = #{loggerModule,jdbcType=VARCHAR}
+      </if>
+      <if test="loggerCreateTime != null and loggerCreateTime != ''" >
+        AND LOGGER_CREATE_TIME = #{loggerCreateTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="orgId != null and orgId != ''" >
+        AND ORG_ID = #{orgId,jdbcType=VARCHAR}
+      </if>
+      <if test="userId != null and userId != ''" >
+        AND USER_ID = #{userId,jdbcType=VARCHAR}
+      </if>
+      <if test="userName != null and userName != ''" >
+        AND USER_NAME = #{userName,jdbcType=VARCHAR}
+      </if>
+      <if test="loggerIp != null and loggerIp != ''" >
+        AND LOGGER_IP = #{loggerIp,jdbcType=VARCHAR}
+      </if>
+      <if test="loggerOperatingSystem != null and loggerOperatingSystem != ''" >
+        AND LOGGER_OPERATING_SYSTEM = #{loggerOperatingSystem,jdbcType=VARCHAR}
+      </if>
+      <if test="loggerBrowserType != null and loggerBrowserType != ''" >
+        AND LOGGER_BROWSER_TYPE = #{loggerBrowserType,jdbcType=VARCHAR}
+      </if>
+      <if test="loggerBrowserVersion != null and loggerBrowserVersion != ''" >
+        AND LOGGER_BROWSER_VERSION = #{loggerBrowserVersion,jdbcType=VARCHAR}
+      </if>
+    </where>
+     ORDER BY LOGGER_ID DESC
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from SYSTEM_LOGGER
+    where LOGGER_ID = #{loggerId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.julongtech.system.dao.entity.SystemLoggerInfo" >
+    <selectKey order="BEFORE" keyProperty="loggerId" resultType="java.lang.String">
+  		select fun_seq('L')
+  	</selectKey>
+    insert into SYSTEM_LOGGER (LOGGER_ID, LOGGER_TYPE, LOGGER_TYPE_NAME, 
+      LOGGER_CREATE_TIME, ORG_ID, USER_ID, 
+      USER_NAME, LOGGER_IP, LOGGER_MODULE, 
+      LOGGER_MODULE_METHOD, LOGGER_RESPONSE_TIME, LOGGER_OPERATING_SYSTEM,LOGGER_BROWSER_TYPE,LOGGER_BROWSER_VERSION,
+      LOGGER_DESCRIPTION,LOGGER_RESERVE_A, LOGGER_RESERVE_B, LOGGER_RESERVE_C
+      )
+    values (#{loggerId,jdbcType=VARCHAR}, #{loggerType,jdbcType=VARCHAR}, #{loggerTypeName,jdbcType=VARCHAR}, 
+      #{loggerCreateTime,jdbcType=TIMESTAMP}, #{orgId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
+      #{userName,jdbcType=VARCHAR}, #{loggerIp,jdbcType=VARCHAR}, #{loggerModule,jdbcType=VARCHAR}, 
+      #{loggerModuleMethod,jdbcType=VARCHAR}, #{loggerResponseTime,jdbcType=VARCHAR}, 
+      #{loggerOperatingSystem,jdbcType=VARCHAR},#{loggerBrowserType,jdbcType=VARCHAR}, #{loggerBrowserVersion,jdbcType=VARCHAR},
+      #{loggerDescription,jdbcType=VARCHAR},#{loggerReserveA,jdbcType=VARCHAR}, #{loggerReserveB,jdbcType=VARCHAR}, #{loggerReserveC,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.julongtech.system.dao.entity.SystemLoggerInfo" >
+  	<selectKey order="BEFORE" keyProperty="loggerId" resultType="java.lang.String">
+  		select fun_seq('L')
+  	</selectKey>
+    insert into SYSTEM_LOGGER
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="loggerId != null and loggerId != '' " >
+        LOGGER_ID,
+      </if>
+      <if test="loggerType != null and loggerType != '' " >
+        LOGGER_TYPE,
+      </if>
+      <if test="loggerTypeName != null and loggerTypeName != '' " >
+        LOGGER_TYPE_NAME,
+      </if>
+      <if test="loggerCreateTime != null and loggerCreateTime != '' " >
+        LOGGER_CREATE_TIME,
+      </if>
+      <if test="orgId != null and orgId != '' " >
+        ORG_ID,
+      </if>
+      <if test="userId != null and userId != '' " >
+        USER_ID,
+      </if>
+      <if test="userName != null and userName != '' " >
+        USER_NAME,
+      </if>
+      <if test="loggerIp != null and loggerIp != '' " >
+        LOGGER_IP,
+      </if>
+      <if test="loggerModule != null and loggerModule != '' " >
+        LOGGER_MODULE,
+      </if>
+      <if test="loggerModuleMethod != null and loggerModuleMethod != '' " >
+        LOGGER_MODULE_METHOD,
+      </if>
+      <if test="loggerResponseTime != null and loggerResponseTime != '' " >
+        LOGGER_RESPONSE_TIME,
+      </if>
+      <if test="loggerOperatingSystem != null and loggerOperatingSystem != '' " >
+        LOGGER_OPERATING_SYSTEM,
+      </if>
+      <if test="loggerBrowserType != null and loggerBrowserType != '' " >
+        LOGGER_BROWSER_TYPE,
+      </if>
+      <if test="loggerBrowserVersion != null and loggerBrowserVersion != '' " >
+        LOGGER_BROWSER_VERSION,
+      </if>
+      <if test="loggerDescription != null and loggerDescription != '' " >
+        LOGGER_DESCRIPTION,
+      </if>
+      <if test="loggerReserveA != null and loggerReserveA != '' " >
+        LOGGER_RESERVE_A,
+      </if>
+      <if test="loggerReserveB != null and loggerReserveB != '' " >
+        LOGGER_RESERVE_B,
+      </if>
+      <if test="loggerReserveC != null and loggerReserveC != '' " >
+        LOGGER_RESERVE_C,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="loggerId != null and loggerId != '' " >
+        #{loggerId,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerType != null and loggerType != '' " >
+        #{loggerType,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerTypeName != null and loggerTypeName != '' " >
+        #{loggerTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerCreateTime != null and loggerCreateTime != '' " >
+        #{loggerCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orgId != null and orgId != '' " >
+        #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null and userId != '' " >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null and userName != '' " >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerIp != null and loggerIp != '' " >
+        #{loggerIp,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerModule != null and loggerModule != '' " >
+        #{loggerModule,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerModuleMethod != null and loggerModuleMethod != '' " >
+        #{loggerModuleMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerResponseTime != null and loggerResponseTime != '' " >
+        #{loggerResponseTime,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerOperatingSystem != null and loggerOperatingSystem != '' " >
+        #{loggerOperatingSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerBrowserType != null and loggerBrowserType != '' " >
+        #{loggerBrowserType,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerBrowserVersion != null and loggerBrowserVersion != '' " >
+        #{loggerBrowserVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerDescription != null and loggerDescription != '' " >
+        #{loggerDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerReserveA != null and loggerReserveA != '' " >
+        #{loggerReserveA,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerReserveB != null and loggerReserveB != '' " >
+        #{loggerReserveB,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerReserveC != null and loggerReserveC != '' " >
+        #{loggerReserveC,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.julongtech.system.dao.entity.SystemLoggerInfo" >
+    update SYSTEM_LOGGER
+    <set >
+      <if test="loggerType != null and loggerType != ''" >
+        LOGGER_TYPE = #{loggerType,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerTypeName != null and loggerTypeName != ''" >
+        LOGGER_TYPE_NAME = #{loggerTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerCreateTime != null and loggerCreateTime != ''" >
+        LOGGER_CREATE_TIME = #{loggerCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orgId != null and orgId != ''" >
+        ORG_ID = #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null and userId != ''" >
+        USER_ID = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null and userName != ''" >
+        USER_NAME = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerIp != null and loggerIp != ''" >
+        LOGGER_IP = #{loggerIp,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerModule != null and loggerModule != ''" >
+        LOGGER_MODULE = #{loggerModule,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerModuleMethod != null and loggerModuleMethod != ''" >
+        LOGGER_MODULE_METHOD = #{loggerModuleMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerResponseTime != null and loggerResponseTime != ''" >
+        LOGGER_RESPONSE_TIME = #{loggerResponseTime,jdbcType=VARCHAR},
+      </if>
+       <if test="loggerOperatingSystem != null and loggerOperatingSystem != '' " >
+        LOGGER_OPERATING_SYSTEM = #{loggerOperatingSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerBrowserType != null and loggerBrowserType != '' " >
+        LOGGER_BROWSER_TYPE = #{loggerBrowserType,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerBrowserVersion != null and loggerBrowserVersion != '' " >
+        LOGGER_BROWSER_VERSION = #{loggerBrowserVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerDescription != null and loggerDescription != '' " >
+        LOGGER_DESCRIPTION = #{loggerDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerReserveA != null and loggerReserveA != ''" >
+        LOGGER_RESERVE_A = #{loggerReserveA,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerReserveB != null and loggerReserveB != ''" >
+        LOGGER_RESERVE_B = #{loggerReserveB,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerReserveC != null and loggerReserveC != ''" >
+        LOGGER_RESERVE_C = #{loggerReserveC,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where LOGGER_ID = #{loggerId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.julongtech.system.dao.entity.SystemLoggerInfo" >
+    update SYSTEM_LOGGER
+    set LOGGER_TYPE = #{loggerType,jdbcType=VARCHAR},
+      LOGGER_TYPE_NAME = #{loggerTypeName,jdbcType=VARCHAR},
+      LOGGER_CREATE_TIME = #{loggerCreateTime,jdbcType=TIMESTAMP},
+      ORG_ID = #{orgId,jdbcType=VARCHAR},
+      USER_ID = #{userId,jdbcType=VARCHAR},
+      USER_NAME = #{userName,jdbcType=VARCHAR},
+      LOGGER_IP = #{loggerIp,jdbcType=VARCHAR},
+      LOGGER_MODULE = #{loggerModule,jdbcType=VARCHAR},
+      LOGGER_MODULE_METHOD = #{loggerModuleMethod,jdbcType=VARCHAR},
+      LOGGER_RESPONSE_TIME = #{loggerResponseTime,jdbcType=VARCHAR},
+      LOGGER_OPERATING_SYSTEM = #{loggerOperatingSystem,jdbcType=VARCHAR},
+      LOGGER_BROWSER_TYPE = #{loggerBrowserType,jdbcType=VARCHAR},
+      LOGGER_BROWSER_VERSION = #{loggerBrowserVersion,jdbcType=VARCHAR},
+      LOGGER_DESCRIPTION = #{loggerDescription,jdbcType=VARCHAR},
+      LOGGER_RESERVE_A = #{loggerReserveA,jdbcType=VARCHAR},
+      LOGGER_RESERVE_B = #{loggerReserveB,jdbcType=VARCHAR},
+      LOGGER_RESERVE_C = #{loggerReserveC,jdbcType=VARCHAR}
+    where LOGGER_ID = #{loggerId,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.julongtech.system.dao.SystemDictionaryDao" >
+  <resultMap id="BaseResultMap" type="com.julongtech.system.service.dto.SystemDictionaryDTO" >
+    <id column="dictionary_id" property="dictionaryId" jdbcType="INTEGER" />
+    <result column="dictionary_type" property="dictionaryType" jdbcType="VARCHAR" />
+    <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    <result column="dictionary_code" property="dictionaryCode" jdbcType="VARCHAR" />
+    <result column="dictionary_name" property="dictionaryName" jdbcType="VARCHAR" />
+    <result column="dictionary_desc" property="dictionaryDesc" jdbcType="VARCHAR" />
+    <result column="dictionary_parent_code" property="dictionaryParentCode" jdbcType="VARCHAR" />
+    <result column="dictionary_create_time" property="dictionaryCreateTime" jdbcType="TIMESTAMP" />
+    <result column="dictionary_create_user_id" property="dictionaryCreateUserId" jdbcType="VARCHAR" />
+    <result column="dictionary_create_user_name" property="dictionaryCreateUserName" jdbcType="VARCHAR" />
+    <result column="dictionary_update_time" property="dictionaryUpdateTime" jdbcType="TIMESTAMP" />
+    <result column="dictionary_update_user_id" property="dictionaryUpdateUserId" jdbcType="VARCHAR" />
+    <result column="dictionary_update_user_name" property="dictionaryUpdateUserName" jdbcType="VARCHAR" />
+    <result column="dictionary_status" property="dictionaryStatus" jdbcType="VARCHAR" />
+    <result column="dictionary_order" property="dictionaryOrder" jdbcType="INTEGER" />
+    <result column="dictionary_reserve_a" property="dictionaryReserveA" jdbcType="VARCHAR" />
+    <result column="dictionary_reserve_b" property="dictionaryReserveB" jdbcType="VARCHAR" />
+    <result column="dictionary_reserve_c" property="dictionaryReserveC" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List">
+     dictionary_id, dictionary_type,org_id, dictionary_code, dictionary_name, dictionary_desc, 
+     dictionary_parent_code, dictionary_create_time, dictionary_create_user_id,
+     dictionary_update_time, dictionary_update_user_id, dictionary_status, dictionary_order, dictionary_reserve_a, 
+     dictionary_reserve_b, dictionary_reserve_c
+  </sql>
+  <sql id="join_sql">
+  	SELECT 
+	     a.dictionary_id, a.dictionary_type,a.org_id, a.dictionary_code, a.dictionary_name, a.dictionary_desc, 
+	     a.dictionary_parent_code, a.dictionary_create_time, a.dictionary_create_user_id,
+	     b.user_name as  dictionary_create_user_name, 
+	     a.dictionary_update_time, 
+	     a.dictionary_update_user_id,
+	     c.user_name as dictionary_update_user_name, 
+	     a.dictionary_status, a.dictionary_order, a.dictionary_reserve_a,a.dictionary_reserve_b, a.dictionary_reserve_c
+    FROM 
+    	system_dictionary a
+    LEFT JOIN system_user b ON a.dictionary_create_user_id = b.user_id
+    LEFT JOIN system_user c ON c.user_id = a.dictionary_update_user_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    <include refid="join_sql"></include>
+    WHERE dictionary_id = #{dictionaryId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectBySelective" resultMap="BaseResultMap" parameterType="com.julongtech.system.service.dto.SystemDictionaryDTO" >
+    <include refid="join_sql"></include>
+    <where>
+      <if test="dictionaryId != null and dictionaryId != ''" >
+        AND dictionary_id = #{dictionaryId,jdbcType=INTEGER}
+      </if>
+      <if test="dictionaryType != null and dictionaryType != ''" >
+        AND dictionary_type LIKE #{dictionaryType,jdbcType=VARCHAR}
+      </if>
+      <if test="dictionaryCode != null and dictionaryCode != ''" >
+        AND dictionary_code = #{dictionaryCode,jdbcType=VARCHAR}
+      </if>
+      <if test="dictionaryName != null and dictionaryName != ''" >
+        AND dictionary_name LIKE #{dictionaryName,jdbcType=VARCHAR}
+      </if>
+      <if test="dictionaryDesc != null and dictionaryDesc != ''" >
+        AND dictionary_desc = #{dictionaryDesc,jdbcType=VARCHAR}
+      </if>
+      <if test="dictionaryParentCode != null and dictionaryParentCode != ''" >
+        AND dictionary_parent_code = #{dictionaryParentCode,jdbcType=VARCHAR}
+      </if>
+      <if test="dictionaryStatus != null and dictionaryStatus != ''" >
+        AND dictionary_status = #{dictionaryStatus,jdbcType=VARCHAR}
+      </if>
+      <if test="dictionaryOrder != null and dictionaryOrder != ''" >
+        AND dictionary_order = #{dictionaryOrder,jdbcType=INTEGER}
+      </if>
+    </where>
+    ORDER BY dictionary_id
+  </select>
+  
+  <select id="selectByType" resultMap="BaseResultMap" parameterType="com.julongtech.system.service.dto.SystemDictionaryDTO" >
+    SELECT 
+         dictionary_type,dictionary_code, dictionary_name
+    FROM system_dictionary 
+    <where>
+      <if test="dictionaryType != null and dictionaryType != ''" >
+        AND dictionary_type like #{dictionaryType,jdbcType=VARCHAR}
+      </if>
+      <if test="dictionaryCode != null and dictionaryCode != ''" >
+        AND dictionary_code = #{dictionaryCode,jdbcType=VARCHAR}
+      </if>
+      <if test="dictionaryName != null and dictionaryName != ''" >
+        AND dictionary_name like #{dictionaryName,jdbcType=VARCHAR}
+      </if>
+      <if test="dictionaryStatus != null and dictionaryStatus != ''" >
+        AND dictionary_status = #{dictionaryStatus,jdbcType=VARCHAR}
+      </if>
+    </where>
+    ORDER BY dictionary_id
+  </select>
+  
+  <select id="uniqueKey"  resultType="int" parameterType="com.julongtech.system.service.dto.SystemDictionaryDTO">
+  	SELECT 
+  		count(0) as count 
+  	FROM system_dictionary
+    WHERE    
+    	dictionary_type = #{dictionaryType,jdbcType=VARCHAR}
+    AND  
+        dictionary_code = #{dictionaryCode,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from SYSTEM_DICTIONARY
+    where dictionary_id = #{dictionaryId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.julongtech.system.dao.entity.SystemDictionaryInfo" useGeneratedKeys="true" keyProperty="dictionaryId">
+    insert into system_dictionary (dictionary_type, dictionary_code, org_id,
+      dictionary_name, dictionary_desc, dictionary_parent_code, 
+      dictionary_create_time, dictionary_create_user_id, 
+      dictionary_update_time, dictionary_update_user_id, 
+      dictionary_status, dictionary_order, dictionary_reserve_a, 
+      dictionary_reserve_b, dictionary_reserve_c)
+    values ( #{dictionaryType,jdbcType=VARCHAR}, #{dictionaryCode,jdbcType=VARCHAR}, #{orgId,jdbcType=VARCHAR},
+      #{dictionaryName,jdbcType=VARCHAR}, #{dictionaryDesc,jdbcType=VARCHAR}, #{dictionaryParentCode,jdbcType=VARCHAR}, 
+      #{dictionaryCreateTime,jdbcType=TIMESTAMP}, #{dictionaryCreateUserId,jdbcType=VARCHAR}, 
+      #{dictionaryUpdateTime,jdbcType=TIMESTAMP}, #{dictionaryUpdateUserId,jdbcType=VARCHAR}, 
+      #{dictionaryStatus,jdbcType=VARCHAR}, #{dictionaryOrder,jdbcType=INTEGER}, #{dictionaryReserveA,jdbcType=VARCHAR}, 
+      #{dictionaryReserveB,jdbcType=VARCHAR}, #{dictionaryReserveC,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.julongtech.system.dao.entity.SystemDictionaryInfo" useGeneratedKeys="true" keyProperty="dictionaryId">
+    insert into SYSTEM_DICTIONARY
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="dictionaryType != null and dictionaryType != '' " >
+        dictionary_type,
+      </if>
+      <if test="orgId != null and orgId != '' " >
+        org_id,
+      </if>
+      <if test="dictionaryCode != null and dictionaryCode != '' " >
+        DICTIONARY_CODE,
+      </if>
+      <if test="dictionaryName != null and dictionaryName != '' " >
+        DICTIONARY_NAME,
+      </if>
+      <if test="dictionaryDesc != null and dictionaryDesc != '' " >
+        DICTIONARY_DESC,
+      </if>
+      <if test="dictionaryParentCode != null and dictionaryParentCode != '' " >
+        DICTIONARY_PARENT_CODE,
+      </if>
+      <if test="dictionaryCreateTime != null and dictionaryCreateTime != '' " >
+        DICTIONARY_CREATE_TIME,
+      </if>
+      <if test="dictionaryCreateUserId != null and dictionaryCreateUserId != '' " >
+        DICTIONARY_CREATE_USER_ID,
+      </if>
+      <if test="dictionaryUpdateTime != null and dictionaryUpdateTime != '' " >
+        DICTIONARY_UPDATE_TIME,
+      </if>
+      <if test="dictionaryUpdateUserId != null and dictionaryUpdateUserId != '' " >
+        DICTIONARY_UPDATE_USER_ID,
+      </if>
+      <if test="dictionaryStatus != null and dictionaryStatus != '' " >
+        DICTIONARY_STATUS,
+      </if>
+      <if test="dictionaryOrder != null and dictionaryOrder != '' " >
+        DICTIONARY_ORDER,
+      </if>
+      <if test="dictionaryReserveA != null and dictionaryReserveA != '' " >
+        DICTIONARY_RESERVE_A,
+      </if>
+      <if test="dictionaryReserveB != null and dictionaryReserveB != '' " >
+        DICTIONARY_RESERVE_B,
+      </if>
+      <if test="dictionaryReserveC != null and dictionaryReserveC != '' " >
+        DICTIONARY_RESERVE_C,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="dictionaryType != null and dictionaryType != '' " >
+        #{dictionaryType,jdbcType=VARCHAR},
+      </if>
+       <if test="orgId != null and orgId != '' " >
+        #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionaryCode != null and dictionaryCode != '' " >
+        #{dictionaryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionaryName != null and dictionaryName != '' " >
+        #{dictionaryName,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionaryDesc != null and dictionaryDesc != '' " >
+        #{dictionaryDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionaryParentCode != null and dictionaryParentCode != '' " >
+        #{dictionaryParentCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionaryCreateTime != null and dictionaryCreateTime != '' " >
+        #{dictionaryCreateTime,jdbcType=DATE},
+      </if>
+      <if test="dictionaryCreateUserId != null and dictionaryCreateUserId != '' " >
+        #{dictionaryCreateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionaryUpdateTime != null and dictionaryUpdateTime != '' " >
+        #{dictionaryUpdateTime,jdbcType=DATE},
+      </if>
+      <if test="dictionaryUpdateUserId != null and dictionaryUpdateUserId != '' " >
+        #{dictionaryUpdateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionaryStatus != null and dictionaryStatus != '' " >
+        #{dictionaryStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionaryOrder != null and dictionaryOrder != '' " >
+        #{dictionaryOrder,jdbcType=INTEGER},
+      </if>
+      <if test="dictionaryReserveA != null and dictionaryReserveA != '' " >
+        #{dictionaryReserveA,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionaryReserveB != null and dictionaryReserveB != '' " >
+        #{dictionaryReserveB,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionaryReserveC != null and dictionaryReserveC != '' " >
+        #{dictionaryReserveC,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.julongtech.system.dao.entity.SystemDictionaryInfo" >
+    update SYSTEM_DICTIONARY
+    <set >
+      <if test="dictionaryType != null and dictionaryType != ''" >
+        dictionary_type = #{dictionaryType,jdbcType=VARCHAR},
+      </if>
+       <if test="orgId != null and orgId != '' " >
+        org_id = #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionaryCode != null and dictionaryCode != ''" >
+        DICTIONARY_CODE = #{dictionaryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionaryName != null and dictionaryName != ''" >
+        DICTIONARY_NAME = #{dictionaryName,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionaryDesc != null and dictionaryDesc != ''" >
+        DICTIONARY_DESC = #{dictionaryDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionaryParentCode != null and dictionaryParentCode != ''" >
+        DICTIONARY_PARENT_CODE = #{dictionaryParentCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionaryCreateTime != null and dictionaryCreateTime != ''" >
+        DICTIONARY_CREATE_TIME = #{dictionaryCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dictionaryCreateUserId != null and dictionaryCreateUserId != ''" >
+        DICTIONARY_CREATE_USER_ID = #{dictionaryCreateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionaryUpdateTime != null and dictionaryUpdateTime != ''" >
+        DICTIONARY_UPDATE_TIME = #{dictionaryUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dictionaryUpdateUserId != null and dictionaryUpdateUserId != ''" >
+        DICTIONARY_UPDATE_USER_ID = #{dictionaryUpdateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionaryStatus != null and dictionaryStatus != ''" >
+        DICTIONARY_STATUS = #{dictionaryStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionaryOrder != null and dictionaryOrder != ''" >
+        DICTIONARY_ORDER = #{dictionaryOrder,jdbcType=INTEGER},
+      </if>
+      <if test="dictionaryReserveA != null and dictionaryReserveA != ''" >
+        DICTIONARY_RESERVE_A = #{dictionaryReserveA,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionaryReserveB != null and dictionaryReserveB != ''" >
+        DICTIONARY_RESERVE_B = #{dictionaryReserveB,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionaryReserveC != null and dictionaryReserveC != ''" >
+        DICTIONARY_RESERVE_C = #{dictionaryReserveC,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where dictionary_id = #{dictionaryId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.julongtech.system.dao.entity.SystemDictionaryInfo" >
+    update SYSTEM_DICTIONARY
+    set dictionary_type = #{dictionaryType,jdbcType=VARCHAR},
+      org_id = #{orgId,jdbcType=VARCHAR},
+      DICTIONARY_CODE = #{dictionaryCode,jdbcType=VARCHAR},
+      DICTIONARY_NAME = #{dictionaryName,jdbcType=VARCHAR},
+      DICTIONARY_DESC = #{dictionaryDesc,jdbcType=VARCHAR},
+      DICTIONARY_PARENT_CODE = #{dictionaryParentCode,jdbcType=VARCHAR},
+      DICTIONARY_CREATE_TIME = #{dictionaryCreateTime,jdbcType=TIMESTAMP},
+      DICTIONARY_CREATE_USER_ID = #{dictionaryCreateUserId,jdbcType=VARCHAR},
+      DICTIONARY_UPDATE_TIME = #{dictionaryUpdateTime,jdbcType=TIMESTAMP},
+      DICTIONARY_UPDATE_USER_ID = #{dictionaryUpdateUserId,jdbcType=VARCHAR},
+      DICTIONARY_STATUS = #{dictionaryStatus,jdbcType=VARCHAR},
+      DICTIONARY_ORDER = #{dictionaryOrder,jdbcType=INTEGER},
+      DICTIONARY_RESERVE_A = #{dictionaryReserveA,jdbcType=VARCHAR},
+      DICTIONARY_RESERVE_B = #{dictionaryReserveB,jdbcType=VARCHAR},
+      DICTIONARY_RESERVE_C = #{dictionaryReserveC,jdbcType=VARCHAR}
+    where dictionary_id = #{dictionaryId,jdbcType=INTEGER}
+  </update>
+  
+</mapper>

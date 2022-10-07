@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.julongtech.system.dao.SystemRoleDao" >
+  <resultMap id="BaseResultMap" type="com.julongtech.system.service.dto.SystemRoleDTO" >
+    <id column="ROLE_ID" property="roleId" jdbcType="INTEGER" />
+    <result column="ROLE_NAME" property="roleName" jdbcType="VARCHAR" />
+    <result column="ORG_ID" property="orgId" jdbcType="VARCHAR" />
+    <result column="ROLE_DESC" property="roleDesc" jdbcType="VARCHAR" />
+    <result column="ROLE_TYPE" property="roleType" jdbcType="VARCHAR" />
+    <result column="ROLE_CREATE_TIME" property="roleCreateTime" jdbcType="TIMESTAMP" />
+    <result column="ROLE_CREATE_USER_ID" property="roleCreateUserId" jdbcType="VARCHAR" />
+    <result column="ROLE_CREATE_USER_NAME" property="roleCreateUserName" jdbcType="VARCHAR" />
+    <result column="ROLE_UPDATE_TIME" property="roleUpdateTime" jdbcType="TIMESTAMP" />
+    <result column="ROLE_UPDATE_USER_ID" property="roleUpdateUserId" jdbcType="VARCHAR" />
+    <result column="ROLE_UPDATE_USER_NAME" property="roleUpdateUserName" jdbcType="VARCHAR" />
+    <result column="ROLE_STATUS" property="roleStatus" jdbcType="VARCHAR" />
+    <result column="ROLE_RESERVE_A" property="roleReserveA" jdbcType="VARCHAR" />
+    <result column="ROLE_RESERVE_B" property="roleReserveB" jdbcType="VARCHAR" />
+    <result column="ROLE_RESERVE_C" property="roleReserveC" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List">
+        role_id, role_name, org_id, role_desc, role_type, role_create_time, role_create_user_id, 
+	    role_update_time, role_update_user_id, role_status, role_reserve_a, role_reserve_b, role_reserve_c
+  </sql>
+  <sql id="join_sql">
+  	SELECT 
+	    a.role_id, a.role_name, a.org_id, a.role_desc, a.role_type, a.role_create_time, a.role_create_user_id, 
+	    b.user_name as role_create_user_name, 
+	    role_update_time, role_update_user_id, 
+	    c.user_name as  role_update_user_name, 
+	    a.role_status, a.role_reserve_a, a.role_reserve_b, a.role_reserve_c
+    FROM 
+    	system_role a
+    LEFT JOIN system_user b on a.role_create_user_id = b.user_id
+    LEFT JOIN system_user c on c.user_id = a.role_update_user_id
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+     <include refid="join_sql"></include>
+    where a.ROLE_ID = #{roleId,jdbcType=DECIMAL}
+  </select>
+  <select id="selectBySelective" resultMap="BaseResultMap" parameterType="com.julongtech.system.service.dto.SystemRoleDTO" >
+   	<include refid="join_sql"></include>
+    <where>
+      <if test="roleId != null and roleId != ''" >
+        AND a.ROLE_ID = #{roleId,jdbcType=DECIMAL}
+      </if>
+      <if test="roleName != null and roleName != ''" >
+        AND a.ROLE_NAME LIKE #{roleName,jdbcType=VARCHAR}
+      </if>
+      <if test="orgId != null and orgId != ''" >
+        AND a.ORG_ID = #{orgId,jdbcType=VARCHAR}
+      </if>
+      <if test="roleStatus != null and roleStatus != ''" >
+        AND a.ROLE_STATUS = #{roleStatus,jdbcType=VARCHAR}
+      </if>
+    </where>
+    ORDER BY ROLE_CREATE_TIME DESC
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from SYSTEM_ROLE
+    where ROLE_ID = #{roleId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="com.julongtech.system.dao.entity.SystemRoleInfo" useGeneratedKeys="true" keyProperty="roleId">
+    insert into system_role ( role_name, org_id, 
+      role_desc, role_type, role_create_time, 
+      role_create_user_id, role_update_time, role_update_user_id, 
+      role_status, role_reserve_a, role_reserve_b, 
+      role_reserve_c)
+    values ( #{roleName,jdbcType=VARCHAR}, #{orgId,jdbcType=VARCHAR}, 
+      #{roleDesc,jdbcType=VARCHAR}, #{roleType,jdbcType=VARCHAR}, #{roleCreateTime,jdbcType=TIMESTAMP}, 
+      #{roleCreateUserId,jdbcType=VARCHAR}, #{roleUpdateTime,jdbcType=TIMESTAMP}, #{roleUpdateUserId,jdbcType=VARCHAR}, 
+      #{roleStatus,jdbcType=VARCHAR}, #{roleReserveA,jdbcType=VARCHAR}, #{roleReserveB,jdbcType=VARCHAR}, 
+      #{roleReserveC,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.julongtech.system.dao.entity.SystemRoleInfo" useGeneratedKeys="true" keyProperty="roleId">
+    insert into SYSTEM_ROLE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="roleName != null and roleName != '' " >
+        ROLE_NAME,
+      </if>
+      <if test="orgId != null and orgId != '' " >
+        ORG_ID,
+      </if>
+      <if test="roleDesc != null and roleDesc != '' " >
+        ROLE_DESC,
+      </if>
+      <if test="roleType != null and roleType != '' " >
+        ROLE_TYPE,
+      </if>
+      <if test="roleCreateTime != null and roleCreateTime != '' " >
+        ROLE_CREATE_TIME,
+      </if>
+      <if test="roleCreateUserId != null and roleCreateUserId != '' " >
+        ROLE_CREATE_USER_ID,
+      </if>
+      <if test="roleUpdateTime != null and roleUpdateTime != '' " >
+        ROLE_UPDATE_TIME,
+      </if>
+      <if test="roleUpdateUserId != null and roleUpdateUserId != '' " >
+        ROLE_UPDATE_USER_ID,
+      </if>
+      <if test="roleStatus != null and roleStatus != '' " >
+        ROLE_STATUS,
+      </if>
+      <if test="roleReserveA != null and roleReserveA != '' " >
+        ROLE_RESERVE_A,
+      </if>
+      <if test="roleReserveB != null and roleReserveB != '' " >
+        ROLE_RESERVE_B,
+      </if>
+      <if test="roleReserveC != null and roleReserveC != '' " >
+        ROLE_RESERVE_C,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="roleName != null and roleName != '' " >
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null and orgId != '' " >
+        #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleDesc != null and roleDesc != '' " >
+        #{roleDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="roleType != null and roleType != '' " >
+        #{roleType,jdbcType=VARCHAR},
+      </if>
+      <if test="roleCreateTime != null and roleCreateTime != '' " >
+        #{roleCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="roleCreateUserId != null and roleCreateUserId != '' " >
+        #{roleCreateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleUpdateTime != null and roleUpdateTime != '' " >
+        #{roleUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="roleUpdateUserId != null and roleUpdateUserId != '' " >
+        #{roleUpdateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleStatus != null and roleStatus != '' " >
+        #{roleStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="roleReserveA != null and roleReserveA != '' " >
+        #{roleReserveA,jdbcType=VARCHAR},
+      </if>
+      <if test="roleReserveB != null and roleReserveB != '' " >
+        #{roleReserveB,jdbcType=VARCHAR},
+      </if>
+      <if test="roleReserveC != null and roleReserveC != '' " >
+        #{roleReserveC,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.julongtech.system.dao.entity.SystemRoleInfo" >
+    update SYSTEM_ROLE
+    <set >
+      <if test="roleName != null and roleName != ''" >
+        ROLE_NAME = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null and orgId != ''" >
+        ORG_ID = #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleDesc != null and roleDesc != ''" >
+        ROLE_DESC = #{roleDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="roleType != null and roleType != ''" >
+        ROLE_TYPE = #{roleType,jdbcType=VARCHAR},
+      </if>
+      <if test="roleCreateTime != null and roleCreateTime != ''" >
+        ROLE_CREATE_TIME = #{roleCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="roleCreateUserId != null and roleCreateUserId != ''" >
+        ROLE_CREATE_USER_ID = #{roleCreateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleUpdateTime != null and roleUpdateTime != ''" >
+        ROLE_UPDATE_TIME = #{roleUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="roleUpdateUserId != null and roleUpdateUserId != ''" >
+        ROLE_UPDATE_USER_ID = #{roleUpdateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleStatus != null and roleStatus != ''" >
+        ROLE_STATUS = #{roleStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="roleReserveA != null and roleReserveA != ''" >
+        ROLE_RESERVE_A = #{roleReserveA,jdbcType=VARCHAR},
+      </if>
+      <if test="roleReserveB != null and roleReserveB != ''" >
+        ROLE_RESERVE_B = #{roleReserveB,jdbcType=VARCHAR},
+      </if>
+      <if test="roleReserveC != null and roleReserveC != ''" >
+        ROLE_RESERVE_C = #{roleReserveC,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ROLE_ID = #{roleId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.julongtech.system.dao.entity.SystemRoleInfo" >
+    update SYSTEM_ROLE
+    set ROLE_NAME = #{roleName,jdbcType=VARCHAR},
+      ORG_ID = #{orgId,jdbcType=VARCHAR},
+      ROLE_DESC = #{roleDesc,jdbcType=VARCHAR},
+      ROLE_TYPE = #{roleType,jdbcType=VARCHAR},
+      ROLE_CREATE_TIME = #{roleCreateTime,jdbcType=TIMESTAMP},
+      ROLE_CREATE_USER_ID = #{roleCreateUserId,jdbcType=VARCHAR},
+      ROLE_UPDATE_TIME = #{roleUpdateTime,jdbcType=TIMESTAMP},
+      ROLE_UPDATE_USER_ID = #{roleUpdateUserId,jdbcType=VARCHAR},
+      ROLE_STATUS = #{roleStatus,jdbcType=VARCHAR},
+      ROLE_RESERVE_A = #{roleReserveA,jdbcType=VARCHAR},
+      ROLE_RESERVE_B = #{roleReserveB,jdbcType=VARCHAR},
+      ROLE_RESERVE_C = #{roleReserveC,jdbcType=VARCHAR}
+    where ROLE_ID = #{roleId,jdbcType=DECIMAL}
+  </update>
+   <!-- 查询是否存在-->
+  <select id="selectCount" resultType="int" parameterType="com.julongtech.system.service.dto.SystemRoleDTO" >
+  	SELECT COUNT(*) FROM SYSTEM_ROLE WHERE ROLE_NAME =  #{roleName,jdbcType=VARCHAR}
+  	<if test="roleId != null and roleId != '' " >
+  	and ROLE_ID !=  #{roleId,jdbcType=DECIMAL}
+  	</if>
+  </select>
+</mapper>
